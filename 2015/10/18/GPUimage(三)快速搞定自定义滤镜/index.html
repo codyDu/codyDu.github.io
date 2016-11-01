@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS," />
+  <meta name="keywords" content="GPUImage," />
 
 
 
@@ -84,34 +84,20 @@
 
 
 
-<meta name="description" content="ViewController的生命周期ARC环境
-单个viewController的生命周期
-initWithCoder:(NSCoder *)aDecoder：（如果使用storyboard或者xib）
-loadView：加载view
-viewDidLoad：view加载完毕
-viewWillAppear：控制器的view将要显示
-viewWillLayoutSubviews：控制器的view将">
+<meta name="description" content="快速搞定自定义滤镜GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ViewController生命周期">
-<meta property="og:url" content="http://pfdu.me/2015/01/27/ViewController生命周期/index.html">
+<meta property="og:title" content="GPUImage（三）快速搞定自定义滤镜">
+<meta property="og:url" content="http://pfdu.me/2015/10/18/GPUimage(三)快速搞定自定义滤镜/index.html">
 <meta property="og:site_name" content="杜鹏飞的博客">
-<meta property="og:description" content="ViewController的生命周期ARC环境
-单个viewController的生命周期
-initWithCoder:(NSCoder *)aDecoder：（如果使用storyboard或者xib）
-loadView：加载view
-viewDidLoad：view加载完毕
-viewWillAppear：控制器的view将要显示
-viewWillLayoutSubviews：控制器的view将">
-<meta property="og:updated_time" content="2016-10-26T17:02:50.000Z">
+<meta property="og:description" content="快速搞定自定义滤镜GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即">
+<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/jizhun">
+<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/tiaozheng">
+<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/final">
+<meta property="og:updated_time" content="2016-11-01T07:20:33.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ViewController生命周期">
-<meta name="twitter:description" content="ViewController的生命周期ARC环境
-单个viewController的生命周期
-initWithCoder:(NSCoder *)aDecoder：（如果使用storyboard或者xib）
-loadView：加载view
-viewDidLoad：view加载完毕
-viewWillAppear：控制器的view将要显示
-viewWillLayoutSubviews：控制器的view将">
+<meta name="twitter:title" content="GPUImage（三）快速搞定自定义滤镜">
+<meta name="twitter:description" content="快速搞定自定义滤镜GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即">
+<meta name="twitter:image" content="http://ofo2isr3w.bkt.clouddn.com/jizhun">
 
 
 
@@ -132,10 +118,10 @@ viewWillLayoutSubviews：控制器的view将">
 
 
 
-  <link rel="canonical" href="http://pfdu.me/2015/01/27/ViewController生命周期/"/>
+  <link rel="canonical" href="http://pfdu.me/2015/10/18/GPUimage(三)快速搞定自定义滤镜/"/>
 
 
-  <title> ViewController生命周期 | 杜鹏飞的博客 </title>
+  <title> GPUImage（三）快速搞定自定义滤镜 | 杜鹏飞的博客 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -275,7 +261,7 @@ viewWillLayoutSubviews：控制器的view将">
             
             
               
-                ViewController生命周期
+                GPUImage（三）快速搞定自定义滤镜
               
             
           </h1>
@@ -287,8 +273,8 @@ viewWillLayoutSubviews：控制器的view将">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-01-27T00:38:40+08:00" content="2015-01-27">
-              2015-01-27
+            <time itemprop="dateCreated" datetime="2015-10-18T22:21:34+08:00" content="2015-10-18">
+              2015-10-18
             </time>
           </span>
 
@@ -301,8 +287,8 @@ viewWillLayoutSubviews：控制器的view将">
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
+                  <a href="/categories/GPUImage/" itemprop="url" rel="index">
+                    <span itemprop="name">GPUImage</span>
                   </a>
                 </span>
 
@@ -334,37 +320,12 @@ viewWillLayoutSubviews：控制器的view将">
       
 
       
-        <h1 id="ViewController的生命周期"><a href="#ViewController的生命周期" class="headerlink" title="ViewController的生命周期"></a>ViewController的生命周期</h1><h3 id="ARC环境"><a href="#ARC环境" class="headerlink" title="ARC环境"></a>ARC环境</h3><ul>
-<li><h4 id="单个viewController的生命周期"><a href="#单个viewController的生命周期" class="headerlink" title="单个viewController的生命周期"></a>单个viewController的生命周期</h4><ul>
-<li>initWithCoder:(NSCoder *)aDecoder：（如果使用storyboard或者xib）</li>
-<li>loadView：加载view</li>
-<li>viewDidLoad：view加载完毕</li>
-<li>viewWillAppear：控制器的view将要显示</li>
-<li>viewWillLayoutSubviews：控制器的view将要布局子控件</li>
-<li>viewDidLayoutSubviews：控制器的view布局子控件完成<br>这期间系统可能会多次调用viewWillLayoutSubviews 、 viewDidLayoutSubviews 俩个方法</li>
-<li>viewDidAppear:控制器的view完全显示</li>
-<li>viewWillDisappear：控制器的view即将消失的时候这期间系统也会调用viewWillLayoutSubviews 、viewDidLayoutSubviews 两个方法</li>
-<li>viewDidDisappear：控制器的view完全消失的时候</li>
-</ul>
-</li>
-<li><h4 id="多个viewControllers跳转"><a href="#多个viewControllers跳转" class="headerlink" title="多个viewControllers跳转"></a>多个viewControllers跳转</h4><ul>
-<li>当我们点击push的时候首先会加载下一个界面然后才会调用界面的消失方法</li>
-<li>initWithCoder:(NSCoder *)aDecoder：ViewController2 (如果用xib创建的情况下）</li>
-<li>loadView：ViewController2</li>
-<li>viewDidLoad：ViewController2</li>
-<li>viewWillDisappear：ViewController1 将要消失</li>
-<li>viewWillAppear：ViewController2 将要出现</li>
-<li>viewWillLayoutSubviews ViewController2</li>
-<li>viewDidLayoutSubviews ViewController2</li>
-<li>viewWillLayoutSubviews:ViewController1</li>
-<li>viewDidLayoutSubviews:ViewController1</li>
-<li>viewDidDisappear:ViewController1 完全消失</li>
-<li>viewDidAppear:ViewController2 完全出现</li>
-</ul>
-</li>
-<li><h4 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h4><p>-整个控制器声明周期： viewDidLoad -&gt; viewWillAppear -&gt; viewWillLayoutSubviews -&gt; viewDidLayoutSubviews -&gt; viewDidAppear -&gt; viewWillDisappear -&gt; viewDidDisappear</p>
-</li>
-</ul>
+        <h2 id="快速搞定自定义滤镜"><a href="#快速搞定自定义滤镜" class="headerlink" title="快速搞定自定义滤镜"></a>快速搞定自定义滤镜</h2><p>GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。<br>GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即可。查表法实现的前提是颜色的映射与周围的颜色无关，即一种颜色无论周围的颜色为何、无论其位于照片的哪个位置，其目标颜色都应该是相同的。</p>
+<p>RGB的颜色数量表示为255<em>255</em>2555 = 16777216如果要记录每种颜色的映射结果，那么需要一千六百多万条记录，这显然无法应用到实际的工程中。为了简化起见，一般每相近的 4 种颜色采用一条记录存储，这样颜色表只需要 64<em>64</em>64 = 262144 条记录。<br>下面是一张标准的基准颜色表<br><img src="http://ofo2isr3w.bkt.clouddn.com/jizhun" alt=""><br>设计师或产品经理在PS中调整好的效果可能是这样的一组Action<br><img src="http://ofo2isr3w.bkt.clouddn.com/tiaozheng" alt="">  </p>
+<p>将这些调整应用到基准颜色表上就得到了一张映射表<br><img src="http://ofo2isr3w.bkt.clouddn.com/final" alt=""><br>上表将 262144 种颜色分为 8 个块，每块64*64格，每一格的颜色都不同。进行颜色映射时，首先使用数字图像处理软件对该基准颜色表应用要模拟的滤镜来生成映射表（如下图），然后对要处理的照片的每个像素，从基准颜色表中找到该像素颜色的位置，然后在映射表的相应位置就可以得到目的颜色。</p>
+<p>暗角可以使用遮罩的方式（也就是使用png图片）也可以使用这个滤镜GPUImageVignetteFilter</p>
+<p>下面是demo code</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"> -(UIImage *)p_ImageFilterWithFilterName:(NSString *)filterName originImage:(UIImage *)originImage&#123;</div><div class="line"> 2 </div><div class="line"> 3  GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:originImage];</div><div class="line"> 4  GPUImagePicture *lookupImageSource = [[GPUImagePicture alloc] initWithImage:[UIImage imageNamed:filterName]];</div><div class="line"> 5  GPUImageLookupFilter *lookupFilter = [[GPUImageLookupFilter alloc] init];</div><div class="line"> 6  </div><div class="line"> 7  [stillImageSource addTarget:lookupFilter];</div><div class="line"> 8  [lookupImageSource addTarget:lookupFilter];</div><div class="line"> 9  if (self.hasVignetteEffect) &#123;</div><div class="line">10      [lookupFilter useNextFrameForImageCapture];</div><div class="line">11      GPUImageVignetteFilter *vignettefilter = [[GPUImageVignetteFilter alloc] init];</div><div class="line">12      vignettefilter.vignetteEnd = kAlohaImageVignetteEnd;</div><div class="line">13      vignettefilter.vignetteStart = kAlohaImageVignetteStart;</div><div class="line">14      </div><div class="line">15      [lookupFilter addTarget:vignettefilter];</div><div class="line">16      [stillImageSource processImage];</div><div class="line">17      [lookupImageSource processImage];</div><div class="line">18      [vignettefilter useNextFrameForImageCapture];</div><div class="line">19      UIImage *filteredimage = [vignettefilter imageFromCurrentFramebuffer];</div><div class="line">20      return filteredimage;</div><div class="line">21  &#125; else &#123;</div><div class="line">22      [stillImageSource processImage];</div><div class="line">23      [lookupImageSource processImage];</div><div class="line">24      [lookupFilter useNextFrameForImageCapture];</div><div class="line">25      UIImage *filteredimage = [lookupFilter imageFromCurrentFramebuffer];</div><div class="line">26      return filteredimage;</div><div class="line">27  &#125;</div><div class="line">28 &#125;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -387,7 +348,7 @@ viewWillLayoutSubviews：控制器的view将">
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
+            <a href="/tags/GPUImage/" rel="tag">#GPUImage</a>
           
         </div>
       
@@ -396,13 +357,13 @@ viewWillLayoutSubviews：控制器的view将">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2015/10/14/GPUimage(二)自定义滤镜/" rel="next" title="GPUImage（二）自定义滤镜">
+                <i class="fa fa-chevron-left"></i> GPUImage（二）自定义滤镜
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/06/17/block深究/" rel="prev" title="Block深究">
-                Block深究 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -516,7 +477,7 @@ viewWillLayoutSubviews：控制器的view将">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ViewController的生命周期"><span class="nav-number">1.</span> <span class="nav-text">ViewController的生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ARC环境"><span class="nav-number">1.0.1.</span> <span class="nav-text">ARC环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单个viewController的生命周期"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">单个viewController的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多个viewControllers跳转"><span class="nav-number">1.0.1.2.</span> <span class="nav-text">多个viewControllers跳转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结："><span class="nav-number">1.0.1.3.</span> <span class="nav-text">小结：</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#快速搞定自定义滤镜"><span class="nav-number">1.</span> <span class="nav-text">快速搞定自定义滤镜</span></a></li></ol></div>
             
           </div>
         </section>
