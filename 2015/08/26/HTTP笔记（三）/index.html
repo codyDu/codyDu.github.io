@@ -1,0 +1,887 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="网络," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="第 7 章 确保 Web 安全的 HTTPS7.1 HTTP 的缺点7.1.1 通信使用明文（不加密），内容可能会被窃听TCP/IP 是可能被窃听的网络这是因为，按 TCP/IP 协议族的工作机制，通信内容在所有的通信线路上都有可能遭到窥视。
+
+加密处理防止被窃听1. 通信的加密
+一种方式就是将通信加密。HTTP 协议中没有加密机制，但可以通过和 SSL（Secure Socket Layer，安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP笔记（三）">
+<meta property="og:url" content="http://dupengfei.com/2015/08/26/HTTP笔记（三）/index.html">
+<meta property="og:site_name" content="杜鹏飞的博客">
+<meta property="og:description" content="第 7 章 确保 Web 安全的 HTTPS7.1 HTTP 的缺点7.1.1 通信使用明文（不加密），内容可能会被窃听TCP/IP 是可能被窃听的网络这是因为，按 TCP/IP 协议族的工作机制，通信内容在所有的通信线路上都有可能遭到窥视。
+
+加密处理防止被窃听1. 通信的加密
+一种方式就是将通信加密。HTTP 协议中没有加密机制，但可以通过和 SSL（Secure Socket Layer，安">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.1.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.2.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.3.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.4.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.1.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.1.1.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.2.1.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.2.2.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.2.3.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.3.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.4.1.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.4.2.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.4.3.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-8.1.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-8.2.jpg">
+<meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-8.3.jpg">
+<meta property="og:updated_time" content="2017-03-16T17:09:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP笔记（三）">
+<meta name="twitter:description" content="第 7 章 确保 Web 安全的 HTTPS7.1 HTTP 的缺点7.1.1 通信使用明文（不加密），内容可能会被窃听TCP/IP 是可能被窃听的网络这是因为，按 TCP/IP 协议族的工作机制，通信内容在所有的通信线路上都有可能遭到窥视。
+
+加密处理防止被窃听1. 通信的加密
+一种方式就是将通信加密。HTTP 协议中没有加密机制，但可以通过和 SSL（Secure Socket Layer，安">
+<meta name="twitter:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dupengfei.com/2015/08/26/HTTP笔记（三）/"/>
+
+
+
+
+
+  <title> HTTP笔记（三） | 杜鹏飞的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b627bfa0d9d39ca04a7102b636415274";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">杜鹏飞的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录一些，分享一些，欢迎交流 😁</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/08/26/HTTP笔记（三）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                HTTP笔记（三）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-26T00:29:11+08:00">
+                2015-08-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/08/26/HTTP笔记（三）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/26/HTTP笔记（三）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="第-7-章-确保-Web-安全的-HTTPS"><a href="#第-7-章-确保-Web-安全的-HTTPS" class="headerlink" title="第 7 章 确保 Web 安全的 HTTPS"></a>第 7 章 确保 Web 安全的 HTTPS</h2><h3 id="7-1-HTTP-的缺点"><a href="#7-1-HTTP-的缺点" class="headerlink" title="7.1 HTTP 的缺点"></a>7.1 HTTP 的缺点</h3><h4 id="7-1-1-通信使用明文（不加密），内容可能会被窃听"><a href="#7-1-1-通信使用明文（不加密），内容可能会被窃听" class="headerlink" title="7.1.1 通信使用明文（不加密），内容可能会被窃听"></a>7.1.1 通信使用明文（不加密），内容可能会被窃听</h4><h5 id="TCP-IP-是可能被窃听的网络"><a href="#TCP-IP-是可能被窃听的网络" class="headerlink" title="TCP/IP 是可能被窃听的网络"></a>TCP/IP 是可能被窃听的网络</h5><p>这是因为，按 TCP/IP 协议族的工作机制，通信内容在所有的通信线路上都有可能遭到窥视。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.1.jpg" alt=""></p>
+<h5 id="加密处理防止被窃听"><a href="#加密处理防止被窃听" class="headerlink" title="加密处理防止被窃听"></a>加密处理防止被窃听</h5><p><strong>1. 通信的加密</strong></p>
+<p>一种方式就是将通信加密。HTTP 协议中没有加密机制，但可以通过和 SSL（Secure Socket Layer，安全套接层）或 TLS（Transport Layer Security，安全层传输协议）的组合使用，加密 HTTP 的通信内容。</p>
+<p>用 SSL 建立安全通信线路之后，就可以在这条线路上进行 HTTP 通信了。与 SSL 组合使用的 HTTP 被称为 HTTPS（HTTP Secure，超文本传输安全协议）或 HTTP over SSL。</p>
+<p><strong>2. 内容加密</strong></p>
+<p>由于 HTTP 协议中没有加密机制，那么就对 HTTP 协议传输的内容本身加密。即把 HTTP 报文里所含的内容进行加密处理。</p>
+<p>在这种情况下，客户端需要对 HTTP 报文进行加密处理后再发送请求。</p>
+<p>有一点必须引起注意，由于该方式不同于 SSL 或 TLS 将整个通信线路加密处理，所以内容仍有被篡改的风险。稍后我们会加以说明。</p>
+<h4 id="7-1-2-不验证通信方的身份，因此有可能遭遇伪装"><a href="#7-1-2-不验证通信方的身份，因此有可能遭遇伪装" class="headerlink" title="7.1.2 不验证通信方的身份，因此有可能遭遇伪装"></a>7.1.2 不验证通信方的身份，因此有可能遭遇伪装</h4><p><strong>1. 任何人都可发起请求</strong></p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.2.jpg" alt=""></p>
+<p>HTTP 协议的实现本身非常简单，不论是谁发送过来的请求都会返回响应，因此不确认通信方，会存在以下各种隐患：</p>
+<ol>
+<li><p>无法确定请求发送至目标的 Web 服务器是否是按真实意图返回响应的那台服务器。有可能是已伪装的 Web 服务器</p>
+</li>
+<li><p>无法确定响应返回到的客户端是否是按真实意图接收响应的那个客户端。有可能是已伪装的客户端</p>
+</li>
+<li><p>无法确定正在通信的对方是否具备访问权限。因为某些 Web 服务器上保存着重要的信息，只想发给特定用户通信的权限</p>
+</li>
+<li><p>无法判定请求是来自何方、出自谁手</p>
+</li>
+<li><p>即使是无意义的请求也会照单全收。无法阻止海量请求下的 DoS 攻击（Denial of Service，拒绝服务攻击）</p>
+</li>
+</ol>
+<p><strong>2. 查明对手的证书</strong></p>
+<p>如果使用 SSL 则可以。SSL 不仅提供加密处理，而且还使用了一种被称为<strong>证书</strong>的手段，可用于确定方。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.3.jpg" alt=""></p>
+<h4 id="7-1-3-无法证明报文的完整性，所以有可能已遭篡改"><a href="#7-1-3-无法证明报文的完整性，所以有可能已遭篡改" class="headerlink" title="7.1.3 无法证明报文的完整性，所以有可能已遭篡改"></a>7.1.3 无法证明报文的完整性，所以有可能已遭篡改</h4><p>所谓完整性是指信息的准确度。若无法证明其完整性，通常也就意味着无法判断信息是否准确。</p>
+<p><strong>1. 接收到的内容可能有误</strong></p>
+<p>像这样，请求或响应在传输途中，遭攻击者拦截并篡改内容的攻击称为中间人攻击（Man-in-the-Middle attack，MITM）。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.1.4.jpg" alt=""></p>
+<p><strong>2. 如何防止篡改</strong></p>
+<p>虽然有使用 HTTP 协议确定报文完整性的方法，但事实上并不便捷、可靠。其中常用的是 MD5 和 SHA-1 等散列值校验的方法，以及用来确认文件的数字签名方法。</p>
+<p>可惜的是，用这些方法也依然无法百分百保证确认结果正确。因为 PGP 和 MD5 本身被改写的话，用户是没有办法意识到的。</p>
+<p>为了有效防止这些弊端，有必要使用 HTTPS。</p>
+<h3 id="7-2-HTTP-加密-认证-完整性保护-HTTPS"><a href="#7-2-HTTP-加密-认证-完整性保护-HTTPS" class="headerlink" title="7.2 HTTP + 加密 + 认证 + 完整性保护 = HTTPS"></a>7.2 HTTP + 加密 + 认证 + 完整性保护 = HTTPS</h3><h4 id="7-2-1-HTTPS-是身披-SSL-外壳的-HTTP"><a href="#7-2-1-HTTPS-是身披-SSL-外壳的-HTTP" class="headerlink" title="7.2.1 HTTPS 是身披 SSL 外壳的 HTTP"></a>7.2.1 HTTPS 是身披 SSL 外壳的 HTTP</h4><p>通常，HTTP 直接和 TCP 通信。当使用 SSL 时，则演变成先和 SSL 通信，再由 SSL 和 TCP 通信了。简言之，所谓 HTTPS，其实就是身披 SSL 协议这层外壳的 HTTP。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.1.jpg" alt=""></p>
+<p>在采用 SSL 后，HTTP 就拥有了 HTTPS 的<strong>加密</strong>、<strong>证书</strong>和<strong>完整性保护</strong>这些功能。</p>
+<p>SSL 是独立于 HTTP 的协议，所以不光是 HTTP 协议，其他运行在应用层的 SMTP 和 Telnet 等协议均可配合 SSL（Secure Socket Layer） 协议使用。可以说 SSL 是当今世界上应用最为广泛的网络安全技术。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.1.1.jpg" alt=""></p>
+<h4 id="7-2-2-相互交换密钥的公开密钥加密技术"><a href="#7-2-2-相互交换密钥的公开密钥加密技术" class="headerlink" title="7.2.2 相互交换密钥的公开密钥加密技术"></a>7.2.2 相互交换密钥的公开密钥加密技术</h4><p>SSL 采用一种叫做公开密钥加密（Public-key cryptography）的加密处理方式。</p>
+<p>近代的加密方法中加密算法是公开的，而密钥却是保密的。通过这种方式得以保持加密方法的安全性。</p>
+<p><strong>1. 共享密钥加密的困境</strong></p>
+<p>加密和解密同用一个密钥的方式称为共享密钥加密（Common key crypto system），也被叫做对称密钥加密。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.2.1.jpg" alt=""></p>
+<p>以共享密钥方式加密时必须将密钥也发给对方。可究竟怎样才能安全地转交？在互联网上转发密钥时，如果通信被监听那么密钥就可会落入攻击者之手，同时也就失去了加密的意义。另外还得设法安全地保管接收到的密钥。</p>
+<p><strong>2. 使用两把密钥的公开密钥加密</strong></p>
+<p>公开密钥加密使用一对非对称的密钥。一把叫做私有密钥（private key），另一把叫做公开密钥（public key）。顾名思义，私有密钥不能让其他任何人知道，而公开密钥则可以随意发布，任何人都可以获得。</p>
+<p>使用公开密钥加密方式，发送密文的一方使用对方的公开密钥进行加密处理，对方收到被加密的信息后，再使用自己的私有密钥进行解密。利用这种方式，不需要发送用来解密的私有密钥，也不必担心密钥被攻击者窃听而盗走。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.2.2.jpg" alt=""></p>
+<p><strong>3. HTTPS 采用混合加密机制</strong></p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.2.3.jpg" alt=""></p>
+<h4 id="7-2-3-证明公开密钥正确性的证书"><a href="#7-2-3-证明公开密钥正确性的证书" class="headerlink" title="7.2.3 证明公开密钥正确性的证书"></a>7.2.3 证明公开密钥正确性的证书</h4><p>遗憾的是，公开密钥加密方式还是存在一些问题的。那就是无法证明公开密钥本身就是货真价实的公开密钥。比如，正准备和某台服务器建立公开密钥加密方式下的通信时，如何证明收到的公开密钥就是原本预想的那台服务器发行的公开密钥。或许在公开密钥传输途中，真正的公开密钥已经被攻击者替换掉了。</p>
+<p>为了解决上述问题，可以使用由数字证书认证机构（CA，Certificate Authority）和其相关机关颁发的公开密钥证书。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.3.jpg" alt=""></p>
+<p><strong>1. 可证明组织真实性的 EV SSL 证书</strong></p>
+<p><strong>2. 用以确定客户端的客户端证书</strong></p>
+<p><strong>3. 认证机构信誉第一</strong></p>
+<p><strong>4. 自由认证机构颁发的证书称为自签名证书</strong></p>
+<h4 id="7-2-4-HTTPS-的安全通信机制"><a href="#7-2-4-HTTPS-的安全通信机制" class="headerlink" title="7.2.4 HTTPS 的安全通信机制"></a>7.2.4 HTTPS 的安全通信机制</h4><p>为了更好地理解 HTTPS，我们来观察一下 HTTPS 的通信步骤：</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.4.1.jpg" alt=""></p>
+<p>在以上流程中，应用层发送数据时会附加一种叫做 MAC（Message Authentication Code）的报文摘要。MAC 能够查知报文是否遭到篡改，从而保护报文的完整性。</p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.4.2.jpg" alt=""></p>
+<p><strong>1. SSL 和 TLS</strong></p>
+<p>SSL 技术最初是由浏览器开发商网景通信公司率先倡导的，开发过 SSL3.0 之前的版本。目前主导权已转移到 IETF（Internet Engineering Task Force，Internet 工程任务组）的手中。</p>
+<p>IETF 以 SSL3.0 为基准，后又制定了 TLS1.0、TLS1.1 和 TLS1.2。TSL 是以 SSL 为原型开发的协议，有时会统一称该协议为 SSL。当前主流的版本是 SSL3.0 和 TLS1.0。</p>
+<p><strong>2. SSL 速度慢吗</strong></p>
+<p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-7.2.4.3.jpg" alt=""></p>
+<p>SSL 的慢分两种。一种是指通信慢。另一种是指由于大量消耗 CPU 及内存等资源，导致处理速度变慢。</p>
+<hr>
+<h2 id="第-8-章-确认访问用户身份的认证"><a href="#第-8-章-确认访问用户身份的认证" class="headerlink" title="第 8 章 确认访问用户身份的认证"></a>第 8 章 确认访问用户身份的认证</h2><h3 id="8-1-何为认证"><a href="#8-1-何为认证" class="headerlink" title="8.1 何为认证"></a>8.1 何为认证</h3><p><strong>HTTP/1.1 使用的认证方式如下所示：</strong></p>
+<ol>
+<li>BASIC 认证（基本认证）</li>
+<li>DIGEST 认证（摘要认证）</li>
+<li>SSL 客户端认证</li>
+<li>FormBase 认证（基于表单认证）</li>
+</ol>
+<p>此外，还有 Windows 统一认证（Keberos 认证、NTLM 认证）</p>
+<h3 id="8-2-BASIC-认证"><a href="#8-2-BASIC-认证" class="headerlink" title="8.2 BASIC 认证"></a>8.2 BASIC 认证</h3><p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-8.1.jpg" alt=""></p>
+<p>BASIC 采用 Base64 编码方式，但这并不是加密处理。</p>
+<p>详情参见：</p>
+<ul>
+<li><a href="http://www.cnblogs.com/xqxacm/p/4886299.html" target="_blank" rel="external">浅谈Base64编码算法</a></li>
+<li><a href="https://nieyong.github.io/wiki_web/BASE64%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8.html" target="_blank" rel="external">BASE64编码原理及应用</a></li>
+<li><a href="https://segmentfault.com/q/1010000000801988" target="_blank" rel="external">为什么有的代码要用 base64 进行编码？</a></li>
+<li><a href="http://blog.xiayf.cn/2016/01/24/base64-encoding/" target="_blank" rel="external">Base64编码原理与应用</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2008/06/base64.html" target="_blank" rel="external">Base64笔记</a></li>
+</ul>
+<h3 id="8-3-DIGEST-认证"><a href="#8-3-DIGEST-认证" class="headerlink" title="8.3 DIGEST 认证"></a>8.3 DIGEST 认证</h3><p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-8.2.jpg" alt=""></p>
+<p>DIGEST 认证提供了高于 BASIC 认证的安全等级，但是和 HTTPS 的客户端认证相比仍旧很弱。DIGEST 认证提供防止密码被窃听的保护机制，但并不存在防止用户伪装的保护机制。</p>
+<h3 id="8-4-SSL-客户端认证"><a href="#8-4-SSL-客户端认证" class="headerlink" title="8.4 SSL 客户端认证"></a>8.4 SSL 客户端认证</h3><p>SSL 客户端认证是借由 HTTPS 的客户端证书完成认证的方式。凭借客户端证书（在 HTTPS 一章已讲解）认证，服务器可确认访问是否来自已登录的客户端。</p>
+<p>在多数情况下，SSL 客户端认证不会仅依靠证书完成认证，一般会和基于表单认证（稍后讲解）组合形成一种双因素认证（Two-factor authentication）来使用。所谓双因素认证就是指，认证过程中不仅需要密码这一个因素，还需要申请认证者提供其他持有信息，从而作为另一个因素，与其组合使用的认证方式。</p>
+<h3 id="8-5-基于表单认证"><a href="#8-5-基于表单认证" class="headerlink" title="8.5 基于表单认证"></a>8.5 基于表单认证</h3><p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-8.3.jpg" alt=""></p>
+<p>基于表单认证本身是通过服务器端的 Web 应用，将客户端发送过来的用户 ID 和密码与之前登录过的信息做匹配来进行认证的。</p>
+<p>但鉴于 HTTP 是无状态协议，之前已认证成功的用户状态无法通过协议层面保存下来。即，无法实现状态管理，因此即使当该用户下一次继续访问，也无法区分他与其他的用户。于是我们会使用 Cookie 来管理 Session，以弥补 HTTP 协议中不存在的状态管理功能。”</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/网络/" rel="tag"># 网络</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/24/HTTP笔记（二）/" rel="next" title="HTTP笔记（二）">
+                <i class="fa fa-chevron-left"></i> HTTP笔记（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/07/GPUimage(一)简介/" rel="prev" title="GPUImage（一）简介">
+                GPUImage（一）简介 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/08/26/HTTP笔记（三）/"
+           data-title="HTTP笔记（三）" data-url="http://dupengfei.com/2015/08/26/HTTP笔记（三）/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="杜鹏飞" />
+          <p class="site-author-name" itemprop="name">杜鹏飞</p>
+           
+              <p class="site-description motion-element" itemprop="description">一个非常nice的iOS开发 😄</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/dupengfei" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://plus.google.com/u/0/117309292640302365524" target="_blank" title="G+">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  G+
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第-7-章-确保-Web-安全的-HTTPS"><span class="nav-number">1.</span> <span class="nav-text">第 7 章 确保 Web 安全的 HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-HTTP-的缺点"><span class="nav-number">1.1.</span> <span class="nav-text">7.1 HTTP 的缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-1-通信使用明文（不加密），内容可能会被窃听"><span class="nav-number">1.1.1.</span> <span class="nav-text">7.1.1 通信使用明文（不加密），内容可能会被窃听</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#TCP-IP-是可能被窃听的网络"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">TCP/IP 是可能被窃听的网络</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#加密处理防止被窃听"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">加密处理防止被窃听</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-2-不验证通信方的身份，因此有可能遭遇伪装"><span class="nav-number">1.1.2.</span> <span class="nav-text">7.1.2 不验证通信方的身份，因此有可能遭遇伪装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-3-无法证明报文的完整性，所以有可能已遭篡改"><span class="nav-number">1.1.3.</span> <span class="nav-text">7.1.3 无法证明报文的完整性，所以有可能已遭篡改</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-HTTP-加密-认证-完整性保护-HTTPS"><span class="nav-number">1.2.</span> <span class="nav-text">7.2 HTTP + 加密 + 认证 + 完整性保护 = HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-1-HTTPS-是身披-SSL-外壳的-HTTP"><span class="nav-number">1.2.1.</span> <span class="nav-text">7.2.1 HTTPS 是身披 SSL 外壳的 HTTP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-2-相互交换密钥的公开密钥加密技术"><span class="nav-number">1.2.2.</span> <span class="nav-text">7.2.2 相互交换密钥的公开密钥加密技术</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-3-证明公开密钥正确性的证书"><span class="nav-number">1.2.3.</span> <span class="nav-text">7.2.3 证明公开密钥正确性的证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-4-HTTPS-的安全通信机制"><span class="nav-number">1.2.4.</span> <span class="nav-text">7.2.4 HTTPS 的安全通信机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第-8-章-确认访问用户身份的认证"><span class="nav-number">2.</span> <span class="nav-text">第 8 章 确认访问用户身份的认证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-何为认证"><span class="nav-number">2.1.</span> <span class="nav-text">8.1 何为认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-BASIC-认证"><span class="nav-number">2.2.</span> <span class="nav-text">8.2 BASIC 认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-DIGEST-认证"><span class="nav-number">2.3.</span> <span class="nav-text">8.3 DIGEST 认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-SSL-客户端认证"><span class="nav-number">2.4.</span> <span class="nav-text">8.4 SSL 客户端认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-5-基于表单认证"><span class="nav-number">2.5.</span> <span class="nav-text">8.5 基于表单认证</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杜鹏飞</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dupengfei"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
