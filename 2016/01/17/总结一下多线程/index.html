@@ -1,0 +1,796 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="线程和进程1.什么是进程1234567进程是指在系统中正在运行的一个应用程序每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内比如同时打开QQ、Xcode，系统就会分别启动2个进程通过“活动监视器”可以查看Mac系统中所开启的进程
+2.什么是线程123451个进程要想执行任务，必须得有线程（每1个进程至少要有1条线程）线程是进程的基本执行单元，一个进程（程序）的所有任务都在线程中执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="总结一下多线程">
+<meta property="og:url" content="http://dupengfei.com/2016/01/17/总结一下多线程/index.html">
+<meta property="og:site_name" content="杜鹏飞的博客">
+<meta property="og:description" content="线程和进程1.什么是进程1234567进程是指在系统中正在运行的一个应用程序每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内比如同时打开QQ、Xcode，系统就会分别启动2个进程通过“活动监视器”可以查看Mac系统中所开启的进程
+2.什么是线程123451个进程要想执行任务，必须得有线程（每1个进程至少要有1条线程）线程是进程的基本执行单元，一个进程（程序）的所有任务都在线程中执行">
+<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/multithread.png">
+<meta property="og:updated_time" content="2017-03-16T11:06:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="总结一下多线程">
+<meta name="twitter:description" content="线程和进程1.什么是进程1234567进程是指在系统中正在运行的一个应用程序每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内比如同时打开QQ、Xcode，系统就会分别启动2个进程通过“活动监视器”可以查看Mac系统中所开启的进程
+2.什么是线程123451个进程要想执行任务，必须得有线程（每1个进程至少要有1条线程）线程是进程的基本执行单元，一个进程（程序）的所有任务都在线程中执行">
+<meta name="twitter:image" content="http://ofo2isr3w.bkt.clouddn.com/multithread.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dupengfei.com/2016/01/17/总结一下多线程/"/>
+
+
+
+
+
+  <title> 总结一下多线程 | 杜鹏飞的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b627bfa0d9d39ca04a7102b636415274";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">杜鹏飞的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录一些，分享一些，欢迎交流 😁</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/01/17/总结一下多线程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                总结一下多线程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-17T00:38:40+08:00">
+                2016-01-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/01/17/总结一下多线程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/17/总结一下多线程/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="线程和进程"><a href="#线程和进程" class="headerlink" title="线程和进程"></a>线程和进程</h2><h4 id="1-什么是进程"><a href="#1-什么是进程" class="headerlink" title="1.什么是进程"></a>1.什么是进程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">进程是指在系统中正在运行的一个应用程序</div><div class="line"></div><div class="line">每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内</div><div class="line"></div><div class="line">比如同时打开QQ、Xcode，系统就会分别启动2个进程</div><div class="line"></div><div class="line">通过“活动监视器”可以查看Mac系统中所开启的进程</div></pre></td></tr></table></figure>
+<h4 id="2-什么是线程"><a href="#2-什么是线程" class="headerlink" title="2.什么是线程"></a>2.什么是线程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">1个进程要想执行任务，必须得有线程（每1个进程至少要有1条线程）</div><div class="line"></div><div class="line">线程是进程的基本执行单元，一个进程（程序）的所有任务都在线程中执行</div><div class="line"></div><div class="line">比如使用酷狗播放音乐、使用迅雷下载电影，都需要在线程中执行</div></pre></td></tr></table></figure>
+<h4 id="3-线程的串行"><a href="#3-线程的串行" class="headerlink" title="3.线程的串行"></a>3.线程的串行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1个线程中任务的执行是串行的</div><div class="line"></div><div class="line">如果要在1个线程中执行多个任务，那么只能一个一个地按顺序执行这些任务</div><div class="line"></div><div class="line">也就是说，在同一时间内，1个线程只能执行1个任务</div><div class="line"></div><div class="line">比如在1个线程中下载3个文件（分别是文件A、文件B、文件C）</div></pre></td></tr></table></figure>
+<h2 id="二、多线程"><a href="#二、多线程" class="headerlink" title="二、多线程"></a>二、多线程</h2><h4 id="1-什么是多线程"><a href="#1-什么是多线程" class="headerlink" title="1.什么是多线程"></a>1.什么是多线程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1个进程中可以开启多条线程，每条线程可以并行（同时）执行不同的任务</div><div class="line"></div><div class="line">进程 -&gt;车间，线程-&gt;车间工人</div><div class="line"></div><div class="line">多线程技术可以提高程序的执行效率</div><div class="line"></div><div class="line">比如同时开启3条线程分别下载3个文件（分别是文件A、文件B、文件C）</div></pre></td></tr></table></figure>
+<h4 id="2-多线程的原理"><a href="#2-多线程的原理" class="headerlink" title="2.多线程的原理"></a>2.多线程的原理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">同一时间，CPU只能处理1条线程，只有1条线程在工作（执行）</div><div class="line">多线程并发（同时）执行，其实是CPU快速地在多条线程之间调度（切换）</div><div class="line">如果CPU调度线程的时间足够快，就造成了多线程并发执行的假象</div><div class="line">思考：如果线程非常非常多，会发生什么情况？</div><div class="line">CPU会在N多线程之间调度，CPU会累死，消耗大量的CPU资源</div><div class="line">每条线程被调度执行的频次会降低（线程的执行效率降低）</div></pre></td></tr></table></figure>
+<h4 id="3-多线程的优缺点"><a href="#3-多线程的优缺点" class="headerlink" title="3.多线程的优缺点"></a>3.多线程的优缺点</h4><p>多线程的优点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">能适当提高程序的执行效率</div><div class="line"></div><div class="line">能适当提高资源利用率（CPU、内存利用率）</div></pre></td></tr></table></figure>
+<p>多线程的缺点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">开启线程需要占用一定的内存空间（默认情况下，主线程占用1M，子线程占用512KB），如果开启大量的线程，会占用大量的内存空间，降低程序的性能</div><div class="line"></div><div class="line">线程越多，CPU在调度线程上的开销就越大</div><div class="line"></div><div class="line">程序设计更加复杂：比如线程之间的通信、多线程的数据共享</div></pre></td></tr></table></figure>
+<h4 id="4-多线程在iOS开发中的应用"><a href="#4-多线程在iOS开发中的应用" class="headerlink" title="4.多线程在iOS开发中的应用"></a>4.多线程在iOS开发中的应用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">主线程:一个iOS程序运行后，默认会开启1条线程，称为“主线程”或“UI线程”</div><div class="line"></div><div class="line">主线程的主要作用</div><div class="line"></div><div class="line">显示\刷新UI界面</div><div class="line"></div><div class="line">处理UI事件（比如点击事件、滚动事件、拖拽事件等）</div></pre></td></tr></table></figure>
+<p>主线程的使用注意:别将比较耗时的操作放到主线程中。</p>
+<p>耗时操作会卡住主线程，严重影响UI的流畅度，给用户一种“卡”的坏体验</p>
+<h2 id="多线程的四中方式"><a href="#多线程的四中方式" class="headerlink" title="多线程的四中方式"></a>多线程的四中方式</h2><h4 id="1-Pthreads"><a href="#1-Pthreads" class="headerlink" title="1. Pthreads"></a>1. Pthreads</h4><h4 id="2-NSThread"><a href="#2-NSThread" class="headerlink" title="2. NSThread"></a>2. NSThread</h4><h4 id="3-GCD"><a href="#3-GCD" class="headerlink" title="3. GCD"></a>3. GCD</h4><h4 id="4-NSOperation-amp-NSOperationQueue"><a href="#4-NSOperation-amp-NSOperationQueue" class="headerlink" title="4. NSOperation &amp; NSOperationQueue"></a>4. NSOperation &amp; NSOperationQueue</h4><h2 id="多线程的全解析-看了不信你还不会？"><a href="#多线程的全解析-看了不信你还不会？" class="headerlink" title="多线程的全解析-看了不信你还不会？"></a>多线程的全解析-看了不信你还不会？</h2><p><img src="http://ofo2isr3w.bkt.clouddn.com/multithread.png" alt=""></p>
+<hr>
+<hr>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/18/GPUimage(三)快速搞定自定义滤镜/" rel="next" title="GPUImage（三）快速搞定自定义滤镜">
+                <i class="fa fa-chevron-left"></i> GPUImage（三）快速搞定自定义滤镜
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/20/性能优化小结/" rel="prev" title="性能优化小结">
+                性能优化小结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/01/17/总结一下多线程/"
+           data-title="总结一下多线程" data-url="http://dupengfei.com/2016/01/17/总结一下多线程/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="杜鹏飞" />
+          <p class="site-author-name" itemprop="name">杜鹏飞</p>
+           
+              <p class="site-description motion-element" itemprop="description">一个非常nice的iOS开发 😄</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/dupengfei" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://plus.google.com/u/0/117309292640302365524" target="_blank" title="G+">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  G+
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#线程和进程"><span class="nav-number">1.</span> <span class="nav-text">线程和进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-什么是进程"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.什么是进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-什么是线程"><span class="nav-number">1.0.2.</span> <span class="nav-text">2.什么是线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-线程的串行"><span class="nav-number">1.0.3.</span> <span class="nav-text">3.线程的串行</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、多线程"><span class="nav-number">2.</span> <span class="nav-text">二、多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-什么是多线程"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.什么是多线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-多线程的原理"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.多线程的原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-多线程的优缺点"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.多线程的优缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-多线程在iOS开发中的应用"><span class="nav-number">2.0.4.</span> <span class="nav-text">4.多线程在iOS开发中的应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程的四中方式"><span class="nav-number">3.</span> <span class="nav-text">多线程的四中方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Pthreads"><span class="nav-number">3.0.1.</span> <span class="nav-text">1. Pthreads</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-NSThread"><span class="nav-number">3.0.2.</span> <span class="nav-text">2. NSThread</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-GCD"><span class="nav-number">3.0.3.</span> <span class="nav-text">3. GCD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-NSOperation-amp-NSOperationQueue"><span class="nav-number">3.0.4.</span> <span class="nav-text">4. NSOperation & NSOperationQueue</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程的全解析-看了不信你还不会？"><span class="nav-number">4.</span> <span class="nav-text">多线程的全解析-看了不信你还不会？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杜鹏飞</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dupengfei"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
