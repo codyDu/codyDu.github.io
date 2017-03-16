@@ -90,7 +90,7 @@
 <meta name="description" content="一个非常nice的iOS开发 😄">
 <meta property="og:type" content="website">
 <meta property="og:title" content="杜鹏飞的博客">
-<meta property="og:url" content="http://dupengfei.com/archives/2015/06/index.html">
+<meta property="og:url" content="http://dupengfei.com/page/2/index.html">
 <meta property="og:site_name" content="杜鹏飞的博客">
 <meta property="og:description" content="一个非常nice的iOS开发 😄">
 <meta name="twitter:card" content="summary">
@@ -123,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://dupengfei.com/archives/2015/06/"/>
+  <link rel="canonical" href="http://dupengfei.com/page/2/"/>
 
 
 
 
 
-  <title> 归档 | 杜鹏飞的博客 </title>
+  <title> 杜鹏飞的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -164,7 +164,9 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  page-archive  ">
+  <div class="container one-collumn sidebar-position-left 
+   page-home 
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -277,66 +279,194 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
+  <section id="posts" class="posts-expand">
+    
+      
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
+  
 
-    <span class="archive-page-counter">
-      
-      
-      
-        
-      
-      嗯..! 目前共计 11 篇日志。 继续努力。
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/01/22/ViewController生命周期/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
     </span>
 
     
+      <header class="post-header">
 
-      
-      
-      
-
-      
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2015">2015</h2>
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/01/22/ViewController生命周期/" itemprop="url">
+                  ViewController生命周期
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T00:38:40+08:00">
+                2015-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/01/22/ViewController生命周期/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/22/ViewController生命周期/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
         </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
       
       
 
       
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
         
-            <a class="post-title-link" href="/2015/06/15/block深究/" itemprop="url">
-              
-                <span itemprop="name">Block深究</span>
-              
-            </a>
+          
+            <h1 id="ViewController的生命周期"><a href="#ViewController的生命周期" class="headerlink" title="ViewController的生命周期"></a>ViewController的生命周期</h1><h3 id="ARC环境"><a href="#ARC环境" class="headerlink" title="ARC环境"></a>ARC环境</h3><ul>
+<li><h4 id="单个viewController的生命周期"><a href="#单个viewController的生命周期" class="headerlink" title="单个viewController的生命周期"></a>单个viewController的生命周期</h4><ul>
+<li>initWithCoder:(NSCoder *)aDecoder：（如果使用storyboard或者xib）</li>
+<li>loadView：加载view</li>
+<li>viewDidLoad：view加载完毕</li>
+<li>viewWillAppear：控制器的view将要显示</li>
+<li>viewWillLayoutSubviews：控制器的view将要布局子控件</li>
+<li>viewDidLayoutSubviews：控制器的view布局子控件完成<br>这期间系统可能会多次调用viewWillLayoutSubviews 、 viewDidLayoutSubviews 俩个方法</li>
+<li>viewDidAppear:控制器的view完全显示</li>
+<li>viewWillDisappear：控制器的view即将消失的时候这期间系统也会调用viewWillLayoutSubviews 、viewDidLayoutSubviews 两个方法</li>
+<li>viewDidDisappear：控制器的view完全消失的时候</li>
+</ul>
+</li>
+<li><h4 id="多个viewControllers跳转"><a href="#多个viewControllers跳转" class="headerlink" title="多个viewControllers跳转"></a>多个viewControllers跳转</h4><ul>
+<li>当我们点击push的时候首先会加载下一个界面然后才会调用界面的消失方法</li>
+<li>initWithCoder:(NSCoder *)aDecoder：ViewController2 (如果用xib创建的情况下）</li>
+<li>loadView：ViewController2</li>
+<li>viewDidLoad：ViewController2</li>
+<li>viewWillDisappear：ViewController1 将要消失</li>
+<li>viewWillAppear：ViewController2 将要出现</li>
+<li>viewWillLayoutSubviews ViewController2</li>
+<li>viewDidLayoutSubviews ViewController2</li>
+<li>viewWillLayoutSubviews:ViewController1</li>
+<li>viewDidLayoutSubviews:ViewController1</li>
+<li>viewDidDisappear:ViewController1 完全消失</li>
+<li>viewDidAppear:ViewController2 完全出现</li>
+</ul>
+</li>
+<li><h4 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h4><p>-整个控制器声明周期： viewDidLoad -&gt; viewWillAppear -&gt; viewWillLayoutSubviews -&gt; viewDidLayoutSubviews -&gt; viewDidAppear -&gt; viewWillDisappear -&gt; viewDidDisappear</p>
+</li>
+</ul>
+
+          
         
-      </h1>
+      
+    </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-06-15T18:32:11+08:00"
-              content="2015-06-15" >
-          06-15
-        </time>
-      </div>
+    <div>
+      
+    </div>
 
-    </header>
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </article>
 
 
-
     
-
   </section>
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
 
 
           
@@ -555,12 +685,6 @@
 
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
-
 
   
 

@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="GPUImage," />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -87,16 +87,31 @@
 
 
 
-<meta name="description" content="GPUImage简介GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像，但我觉得 CoreImage 还是慢)。除了速度上的优势，GPUImage 还提供了很多很棒的图像">
+<meta name="description" content="首先两个方法都是异步执行。layoutSubviews方便数据计算，drawRect方便视图重绘。
+layoutSubviews在以下情况下会被调用：
+1、init初始化不会触发layoutSubviews。
+2、addSubview会触发layoutSubviews。
+3、设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。
+4、滚动一个UIS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GPUImage（一）简介">
-<meta property="og:url" content="http://dupengfei.com/2015/10/07/GPUimage(一)简介/index.html">
+<meta property="og:title" content="关于layoutSubviews和drawRect">
+<meta property="og:url" content="http://dupengfei.com/2016/03/10/关于layoutSubviews和drawRect/index.html">
 <meta property="og:site_name" content="杜鹏飞的博客">
-<meta property="og:description" content="GPUImage简介GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像，但我觉得 CoreImage 还是慢)。除了速度上的优势，GPUImage 还提供了很多很棒的图像">
-<meta property="og:updated_time" content="2016-11-01T07:21:32.000Z">
+<meta property="og:description" content="首先两个方法都是异步执行。layoutSubviews方便数据计算，drawRect方便视图重绘。
+layoutSubviews在以下情况下会被调用：
+1、init初始化不会触发layoutSubviews。
+2、addSubview会触发layoutSubviews。
+3、设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。
+4、滚动一个UIS">
+<meta property="og:updated_time" content="2017-03-16T11:58:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GPUImage（一）简介">
-<meta name="twitter:description" content="GPUImage简介GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像，但我觉得 CoreImage 还是慢)。除了速度上的优势，GPUImage 还提供了很多很棒的图像">
+<meta name="twitter:title" content="关于layoutSubviews和drawRect">
+<meta name="twitter:description" content="首先两个方法都是异步执行。layoutSubviews方便数据计算，drawRect方便视图重绘。
+layoutSubviews在以下情况下会被调用：
+1、init初始化不会触发layoutSubviews。
+2、addSubview会触发layoutSubviews。
+3、设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。
+4、滚动一个UIS">
 
 
 
@@ -124,13 +139,13 @@
 
 
 
-  <link rel="canonical" href="http://dupengfei.com/2015/10/07/GPUimage(一)简介/"/>
+  <link rel="canonical" href="http://dupengfei.com/2016/03/10/关于layoutSubviews和drawRect/"/>
 
 
 
 
 
-  <title> GPUImage（一）简介 | 杜鹏飞的博客 </title>
+  <title> 关于layoutSubviews和drawRect | 杜鹏飞的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -289,7 +304,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/10/07/GPUimage(一)简介/">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/03/10/关于layoutSubviews和drawRect/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杜鹏飞">
@@ -310,7 +325,7 @@
             
             
               
-                GPUImage（一）简介
+                关于layoutSubviews和drawRect
               
             
           </h1>
@@ -325,8 +340,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-07T17:30:48+08:00">
-                2015-10-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-10T18:24:43+08:00">
+                2016-03-10
               </time>
             
 
@@ -348,8 +363,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/GPUImage/" itemprop="url" rel="index">
-                    <span itemprop="name">GPUImage</span>
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
                   </a>
                 </span>
 
@@ -366,8 +381,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2015/10/07/GPUimage(一)简介/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/07/GPUimage(一)简介/" itemprop="commentCount"></span>
+                <a href="/2016/03/10/关于layoutSubviews和drawRect/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/10/关于layoutSubviews和drawRect/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -393,30 +408,33 @@
       
 
       
-        <h2 id="GPUImage简介"><a href="#GPUImage简介" class="headerlink" title="GPUImage简介"></a>GPUImage简介</h2><p>GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像，但我觉得 CoreImage 还是慢)。除了速度上的优势，GPUImage 还提供了很多很棒的图像处理滤镜，但有时候这些基本功能仍然无法满足实际开发中的需求，不用担心 GPUImage 支持自定义滤镜。</p>
-<h2 id="安装GPUImage"><a href="#安装GPUImage" class="headerlink" title="安装GPUImage"></a>安装GPUImage</h2><ol>
-<li>把GPUImage.xcodeproj 拖到你的Xcode project</li>
-<li>在app的target依赖设置里面添加GPUImage作为Target Dependency</li>
-<li>在build phase的Link Binary With Libraries, 把libGPUImage.a加进来.</li>
-<li>添加下面这些系统framework:<br>CoreMedia<br>CoreVideo<br>OpenGLES<br>AVFoundation<br>QuartzCore  </li>
-<li>头文件搜索路径: project’s build settings, 把GPUImage的source和source下的iOS目录加到搜索路径里, 使用相对路径和递归.</li>
-<li>包含下面这个头文件:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#import &quot;GPUImage.h&quot;</div></pre></td></tr></table></figure>
-<h2 id="GPUImage的简单使用"><a href="#GPUImage的简单使用" class="headerlink" title="GPUImage的简单使用"></a>GPUImage的简单使用</h2><h3 id="GPUImage中的有几个概念"><a href="#GPUImage中的有几个概念" class="headerlink" title="GPUImage中的有几个概念"></a>GPUImage中的有几个概念</h3><p>⁃ output，输出源</p>
-<p>⁃ intput，输入源</p>
-<p>⁃ filter，滤镜</p>
-<p>所以一个完整的滤镜处理流程是: output+X+input，X就是滤镜组(1+个滤镜)。GPUImage为了方便，新版本中提供了GPUImageFilterPipeline 这个东西，方便用户使用多个滤镜组合，不用担心前后的链式逻辑。</p>
-<p>输入源是一些GPUImageOutput的子类.包括:<br>(1). GPUImageVideoCamera (for live video from an iOS camera)<br>(2.) GPUImageStillCamera (for taking photos with the camera)<br>(3). GPUImagePicture (for still images)<br>(4). GPUImageMovie (for movies). S  </p>
-<p>输出源可以是GPUImageView, 或者GPUImageMovieWriter<br>一个典型的例子   </p>
-<ol>
-<li>GPUImageVideoCamera -&gt; GPUImageSepiaFilter -&gt; GPUImageView<h3 id="处理流程"><a href="#处理流程" class="headerlink" title="处理流程"></a>处理流程</h3>在使用GPUImage之前先做些准备工作。OpenGL ES程序来处理图片，会有以下几个步骤：<br>1、初始化OpenGL ES环境，编译、链接顶点着色器和片元着色器；<br>2、缓存顶点、纹理坐标数据，传送图像数据到GPU；<br>3、绘制图元到特定的帧缓存；<br>4、在帧缓存取出绘制的图像。<br>GPUImage里面有两个非常重要的类：<br><strong>1 GPUImageFilter</strong>负责的是第一、二、三步。<br><strong>2 GPUImageFramebuffer</strong>负责是第四步。</li>
-</ol>
-<h3 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h3><p>将GPUImageView设置为self.view，根据face.png，设置GPUImagePicture，然后添加GPUImageTiltShiftFilter到响应链，再把GPUImageView作为响应链的终点，最后调用processImage，开始处理图像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">GPUImageView *primaryView = [[GPUImageView alloc] initWithFrame:self.view.frame];</div><div class="line">    self.view = primaryView;</div><div class="line">    UIImage *inputImage = [UIImage imageNamed:@&quot;face.png&quot;];</div><div class="line">    _sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage];</div><div class="line">    _sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];</div><div class="line">    _sepiaFilter.blurRadiusInPixels = 40.0;</div><div class="line">    [_sepiaFilter forceProcessingAtSize:primaryView.sizeInPixels];</div><div class="line">    [_sourcePicture addTarget:_sepiaFilter];</div><div class="line">    [_sepiaFilter addTarget:primaryView];</div><div class="line">    [_sourcePicture processImage];</div></pre></td></tr></table></figure></p>
-<p>使用GPUImage自带的滤镜是远远不能满足需求的，下一篇就要看一下自定义滤镜。</p>
-<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>项目里，发现滤镜模块调用完了以后，内存上去了下不来，反复检查，所有GPUImage相关元素都已经释放了。后来想到了显存，arc环境下，只负责回收oc对象的内存，显存自然需要GPUImage使用者自己来回收，这样也就容易了，翻GPUImage的api，知道</p>
-<p>GPUImageContext中有个framebufferCache：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[[GPUImageContextsharedImageProcessingContext].framebufferCachepurgeAllUnassignedFramebuffers]</div></pre></td></tr></table></figure>
+        <p>首先两个方法都是异步执行。layoutSubviews方便数据计算，drawRect方便视图重绘。</p>
+<h4 id="layoutSubviews在以下情况下会被调用："><a href="#layoutSubviews在以下情况下会被调用：" class="headerlink" title="layoutSubviews在以下情况下会被调用："></a>layoutSubviews在以下情况下会被调用：</h4><ul>
+<li>1、init初始化不会触发layoutSubviews。</li>
+<li>2、addSubview会触发layoutSubviews。</li>
+<li>3、设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。</li>
+<li>4、滚动一个UIScrollView会触发layoutSubviews。</li>
+<li>5、旋转Screen会触发父UIView上的layoutSubviews事件。</li>
+<li>6、改变一个UIView大小的时候也会触发父UIView上的layoutSubviews事件。</li>
+<li>7、直接调用setLayoutSubviews。</li>
+</ul>
+<h4 id="drawRect在以下情况下会被调用："><a href="#drawRect在以下情况下会被调用：" class="headerlink" title="drawRect在以下情况下会被调用："></a>drawRect在以下情况下会被调用：</h4><ul>
+<li>1、如果在UIView初始化时没有设置rect大小，将直接导致drawRect不被自动调用。drawRect 掉用是在Controller-&gt;loadView, Controller-&gt;viewDidLoad 两方法之后掉用的.所以不用担心在 控制器中,这些View的drawRect就开始画了.这样可以在控制器中设置一些值给View(如果这些View draw的时候需要用到某些变量 值).</li>
+<li>2、该方法在调用sizeToFit后被调用，所以可以先调用sizeToFit计算出size。然后系统自动调用drawRect:方法。</li>
+<li>3、通过设置contentMode属性值为UIViewContentModeRedraw。那么将在每次设置或更改frame的时候自动调用drawRect:。</li>
+<li>4、直接调用setNeedsDisplay，或者setNeedsDisplayInRect:触发drawRect:，但是有个前提条件是rect不能为0。</li>
+</ul>
+<blockquote>
+<p>以上1,2推荐；而3,4不提倡</p>
+</blockquote>
+<h6 id="drawRect方法使用注意点："><a href="#drawRect方法使用注意点：" class="headerlink" title="drawRect方法使用注意点："></a>drawRect方法使用注意点：</h6><ul>
+<li><p>1、 若使用UIView绘图，只能在drawRect：方法中获取相应的contextRef并绘图。如果在其他方法中获取将获取到一个invalidate 的ref并且不能用于画图。drawRect：方法不能手动显示调用，必须通过调用setNeedsDisplay 或 者 setNeedsDisplayInRect，让系统自动调该方法。</p>
+</li>
+<li><p>2、若使用calayer绘图，只能在drawInContext: 中（类似鱼drawRect）绘制，或者在delegate中的相应方法绘制。同样也是调用setNeedDisplay等间接调用以上方法 3、若要实时画图，不能使用gestureRecognizer，只能使用touchbegan等方法来掉用setNeedsDisplay实时刷新屏幕</p>
+</li>
+</ul>
+<hr>
+<hr>
 
       
     </div>
@@ -440,7 +458,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/GPUImage/" rel="tag"># GPUImage</a>
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
           
         </div>
       
@@ -453,8 +471,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/06/15/block深究/" rel="next" title="Block深究">
-                <i class="fa fa-chevron-left"></i> Block深究
+              <a href="/2016/01/17/总结一下多线程/" rel="next" title="总结一下多线程">
+                <i class="fa fa-chevron-left"></i> 总结一下多线程
               </a>
             
           </div>
@@ -463,8 +481,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/10/14/GPUimage(二)自定义滤镜/" rel="prev" title="GPUImage（二）自定义滤镜">
-                GPUImage（二）自定义滤镜 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/06/20/性能优化小结/" rel="prev" title="性能优化小结">
+                性能优化小结 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -491,8 +509,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2015/10/07/GPUimage(一)简介/"
-           data-title="GPUImage（一）简介" data-url="http://dupengfei.com/2015/10/07/GPUimage(一)简介/">
+      <div class="ds-thread" data-thread-key="2016/03/10/关于layoutSubviews和drawRect/"
+           data-title="关于layoutSubviews和drawRect" data-url="http://dupengfei.com/2016/03/10/关于layoutSubviews和drawRect/">
       </div>
     
   </div>
@@ -614,7 +632,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GPUImage简介"><span class="nav-number">1.</span> <span class="nav-text">GPUImage简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装GPUImage"><span class="nav-number">2.</span> <span class="nav-text">安装GPUImage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPUImage的简单使用"><span class="nav-number">3.</span> <span class="nav-text">GPUImage的简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GPUImage中的有几个概念"><span class="nav-number">3.1.</span> <span class="nav-text">GPUImage中的有几个概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理流程"><span class="nav-number">3.2.</span> <span class="nav-text">处理流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心代码"><span class="nav-number">3.3.</span> <span class="nav-text">核心代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遇到的问题"><span class="nav-number">4.</span> <span class="nav-text">遇到的问题</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#layoutSubviews在以下情况下会被调用："><span class="nav-number">1.</span> <span class="nav-text">layoutSubviews在以下情况下会被调用：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#drawRect在以下情况下会被调用："><span class="nav-number">2.</span> <span class="nav-text">drawRect在以下情况下会被调用：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#drawRect方法使用注意点："><span class="nav-number">2.0.1.</span> <span class="nav-text">drawRect方法使用注意点：</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
