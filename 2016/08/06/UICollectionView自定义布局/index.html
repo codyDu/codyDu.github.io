@@ -1,0 +1,800 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言UICollectionView由于可以custom layout的原因使其非常强大，一个layout能玩出花来。之前有一个非常有名的第三方库iCarousel，效果也很不错，但是由于在性能上还是稍差些。后来就慢慢被UICollectionView取代了。进入正题，我做自定义layout的时候就是看raywenderlich上面的教程，我觉得非常好，就用raywenderlich的demo来记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UICollectionView自定义布局">
+<meta property="og:url" content="http://dupengfei.com/2016/08/06/UICollectionView自定义布局/index.html">
+<meta property="og:site_name" content="杜鹏飞的博客">
+<meta property="og:description" content="前言UICollectionView由于可以custom layout的原因使其非常强大，一个layout能玩出花来。之前有一个非常有名的第三方库iCarousel，效果也很不错，但是由于在性能上还是稍差些。后来就慢慢被UICollectionView取代了。进入正题，我做自定义layout的时候就是看raywenderlich上面的教程，我觉得非常好，就用raywenderlich的demo来记">
+<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/collectionview.png">
+<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/layout-lifecycle-667x500.png">
+<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/107041-fcc6dc95c323ca39.jpg">
+<meta property="og:updated_time" content="2017-03-16T15:55:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UICollectionView自定义布局">
+<meta name="twitter:description" content="前言UICollectionView由于可以custom layout的原因使其非常强大，一个layout能玩出花来。之前有一个非常有名的第三方库iCarousel，效果也很不错，但是由于在性能上还是稍差些。后来就慢慢被UICollectionView取代了。进入正题，我做自定义layout的时候就是看raywenderlich上面的教程，我觉得非常好，就用raywenderlich的demo来记">
+<meta name="twitter:image" content="http://ofo2isr3w.bkt.clouddn.com/collectionview.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dupengfei.com/2016/08/06/UICollectionView自定义布局/"/>
+
+
+
+
+
+  <title> UICollectionView自定义布局 | 杜鹏飞的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b627bfa0d9d39ca04a7102b636415274";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">杜鹏飞的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录一些，分享一些，欢迎交流 😁</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/08/06/UICollectionView自定义布局/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                UICollectionView自定义布局
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-06T15:28:20+08:00">
+                2016-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/06/UICollectionView自定义布局/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/06/UICollectionView自定义布局/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>UICollectionView由于可以custom layout的原因使其非常强大，一个layout能玩出花来。之前有一个非常有名的第三方库iCarousel，效果也很不错，但是由于在性能上还是稍差些。后来就慢慢被UICollectionView取代了。<br>进入正题，我做自定义layout的时候就是看raywenderlich上面的教程，我觉得非常好，就用raywenderlich的demo来记录一下。demo在<a href="http://cdn3.raywenderlich.com/wp-content/uploads/2015/06/Pinterest-final1.zip" target="_blank" rel="external">这里</a>。</p>
+<h2 id="layout和data的关系"><a href="#layout和data的关系" class="headerlink" title="layout和data的关系"></a>layout和data的关系</h2><p><img src="http://ofo2isr3w.bkt.clouddn.com/collectionview.png" alt=""></p>
+<h2 id="核心布局处理"><a href="#核心布局处理" class="headerlink" title="核心布局处理"></a>核心布局处理</h2><p><img src="http://ofo2isr3w.bkt.clouddn.com/layout-lifecycle-667x500.png" alt=""><br>自定义layout，有三个方法必须重写</p>
+<ul>
+<li>func prepareLayout() 在这个方法里计算好每个Item的position和CollectionView的size并缓存</li>
+<li>func collectionViewContentSize() -&gt; CGSize 返回CollectionView的ContentSize</li>
+<li>func layoutAttributesForElementsInRect(rect: CGRect) -&gt; [UICollectionViewLayoutAttributes]?在这个方法里返回某个特定区域的布局的属性</li>
+</ul>
+<h2 id="计算布局的属性"><a href="#计算布局的属性" class="headerlink" title="计算布局的属性"></a>计算布局的属性</h2><p>获取cell各个控件的高度以及header的高度，使用代理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@objc protocol WeiouDetailCollectionViewLayoutDelegate &#123;</div><div class="line">     Method to ask the delegate for the height of the image</div><div class="line">    func collectionView(collectionView:UICollectionView, heightForPhotoAtIndexPath indexPath:NSIndexPath , withWidth:CGFloat) -&gt; CGFloat</div><div class="line">     Method to ask the delegate for the height of the annotation text</div><div class="line">    func collectionView(collectionView: UICollectionView, heightForAnnotationAtIndexPath indexPath: NSIndexPath, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    </div><div class="line">    </div><div class="line">    func collectionView(collectionView: UICollectionView, heightForShortAddrAtIndexPath indexPath: NSIndexPath, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    </div><div class="line">    for header</div><div class="line">    func collectionViewHeightForHeadrPicture(collectionView: UICollectionView, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">override func prepareLayout() &#123;</div><div class="line">    // 1. Only calculate once</div><div class="line">    if cache.isEmpty &#123;</div><div class="line"></div><div class="line">      // 2. Pre-Calculates the X Offset for every column and adds an array to increment the currently max Y Offset for each column</div><div class="line">      // 每列宽度</div><div class="line">      let columnWidth = contentWidth / CGFloat(numberOfColumns)</div><div class="line">      var xOffset = [CGFloat]()</div><div class="line">      // 其实就是xOffset就是两个,都是固定的.</div><div class="line">      for column in 0 ..&lt; numberOfColumns &#123;</div><div class="line">        xOffset.append(CGFloat(column) * columnWidth )</div><div class="line">      &#125;</div><div class="line">      var column = 0</div><div class="line">      var yOffset = [CGFloat](count: numberOfColumns, repeatedValue: 0)</div><div class="line"></div><div class="line">      // 3. Iterates through the list of items in the first section</div><div class="line">      for item in 0 ..&lt; collectionView!.numberOfItemsInSection(0) &#123;</div><div class="line"></div><div class="line">        let indexPath = NSIndexPath(forItem: item, inSection: 0)</div><div class="line"></div><div class="line">        // 4. Asks the delegate for the height of the picture and the annotation and calculates the cell frame.</div><div class="line">        // 这个width是为了计算comment的长度的.</div><div class="line">        let width = columnWidth - cellPadding*2</div><div class="line">        let photoHeight = delegate.collectionView(collectionView!, heightForPhotoAtIndexPath: indexPath , withWidth:width)</div><div class="line">        let annotationHeight = delegate.collectionView(collectionView!, heightForAnnotationAtIndexPath: indexPath, withWidth: width)</div><div class="line">        let height = cellPadding +  photoHeight + annotationHeight + cellPadding</div><div class="line">        let frame = CGRect(x: xOffset[column], y: yOffset[column], width: columnWidth, height: height)</div><div class="line">        let insetFrame = CGRectInset(frame, cellPadding, cellPadding)</div><div class="line"></div><div class="line">        // 5. Creates an UICollectionViewLayoutItem with the frame and add it to the cache</div><div class="line">        let attributes = PinterestLayoutAttributes(forCellWithIndexPath: indexPath)</div><div class="line">        attributes.photoHeight = photoHeight</div><div class="line">        attributes.frame = insetFrame</div><div class="line">        cache.append(attributes)</div><div class="line"></div><div class="line">        // 6. Updates the collection view content height</div><div class="line">        contentHeight = max(contentHeight, CGRectGetMaxY(frame))</div><div class="line">        yOffset[column] = yOffset[column] + height</div><div class="line"></div><div class="line">        column = column &gt;= (numberOfColumns - 1) ? 0 : ++column</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>还是上图吧，一图胜千言</p>
+<p><img src="http://ofo2isr3w.bkt.clouddn.com/107041-fcc6dc95c323ca39.jpg" alt=""></p>
+<p>在layout中，没有列的概念，就是很机械的按照规则排列下去，主要Y值的计算。虚拟了一个列的概念<br><code>column = column &gt;= (numberOfColumns - 1) ? 0 : ++column</code><br>理解一下</p>
+<h2 id="返回布局的ContentSize"><a href="#返回布局的ContentSize" class="headerlink" title="返回布局的ContentSize"></a>返回布局的ContentSize</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//需要返回的是整个collectionView高度，包括header, footer, cell</div><div class="line"></div><div class="line">    override func collectionViewContentSize() -&gt; CGSize &#123;</div><div class="line">        return CGSize(width: contentWidth, height: contentHeight)</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="重写layoutAttributesForElementsInRect"><a href="#重写layoutAttributesForElementsInRect" class="headerlink" title="重写layoutAttributesForElementsInRect(_:)"></a>重写layoutAttributesForElementsInRect(_:)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">override func layoutAttributesForElementsInRect(rect: CGRect) -&gt; [UICollectionViewLayoutAttributes]? &#123;</div><div class="line">       </div><div class="line">       var layoutAttributes = [UICollectionViewLayoutAttributes]()</div><div class="line">       </div><div class="line">       if CGRectIntersectsRect(headerAttributes.frame, rect ) &#123;</div><div class="line">           layoutAttributes.append(headerAttributes)</div><div class="line">       &#125;</div><div class="line">       </div><div class="line">       </div><div class="line">       // Loop through the cache and look for items in the rect</div><div class="line">       for attributes  in cache &#123;</div><div class="line">           if CGRectIntersectsRect(attributes.frame, rect ) &#123;</div><div class="line">               layoutAttributes.append(attributes)</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       return layoutAttributes</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>有header footer的话一定要加上！！！</p>
+<h2 id="关于获取高度的代理方法"><a href="#关于获取高度的代理方法" class="headerlink" title="关于获取高度的代理方法"></a>关于获取高度的代理方法</h2><p>主要是图片，纯文本，富文本的高度，方法Google一下就知道了，很简单。富文本的高度计算坑比较大，另开一篇说吧。。。</p>
+<h2 id="更新约束"><a href="#更新约束" class="headerlink" title="更新约束"></a>更新约束</h2><p>最后，在自定义的cell，header里调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-(void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes</div></pre></td></tr></table></figure>
+<p>更新约束，然后，大功告成！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/20/性能优化小结/" rel="next" title="性能优化小结">
+                <i class="fa fa-chevron-left"></i> 性能优化小结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/21/功能代码小结&备忘/" rel="prev" title="功能代码小结&备忘">
+                功能代码小结&备忘 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/06/UICollectionView自定义布局/"
+           data-title="UICollectionView自定义布局" data-url="http://dupengfei.com/2016/08/06/UICollectionView自定义布局/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="杜鹏飞" />
+          <p class="site-author-name" itemprop="name">杜鹏飞</p>
+           
+              <p class="site-description motion-element" itemprop="description">一个非常nice的iOS开发 😄</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/dupengfei" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://plus.google.com/u/0/117309292640302365524" target="_blank" title="G+">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  G+
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#layout和data的关系"><span class="nav-number">2.</span> <span class="nav-text">layout和data的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心布局处理"><span class="nav-number">3.</span> <span class="nav-text">核心布局处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算布局的属性"><span class="nav-number">4.</span> <span class="nav-text">计算布局的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#返回布局的ContentSize"><span class="nav-number">5.</span> <span class="nav-text">返回布局的ContentSize</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重写layoutAttributesForElementsInRect"><span class="nav-number">6.</span> <span class="nav-text">重写layoutAttributesForElementsInRect(_:)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于获取高度的代理方法"><span class="nav-number">7.</span> <span class="nav-text">关于获取高度的代理方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新约束"><span class="nav-number">8.</span> <span class="nav-text">更新约束</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杜鹏飞</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dupengfei"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

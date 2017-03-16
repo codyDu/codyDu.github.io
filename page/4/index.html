@@ -290,6 +290,161 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/10/18/GPUimage(三)快速搞定自定义滤镜/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/10/18/GPUimage(三)快速搞定自定义滤镜/" itemprop="url">
+                  GPUImage（三）快速搞定自定义滤镜
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-18T22:21:34+08:00">
+                2015-10-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GPUImage/" itemprop="url" rel="index">
+                    <span itemprop="name">GPUImage</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/18/GPUimage(三)快速搞定自定义滤镜/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/18/GPUimage(三)快速搞定自定义滤镜/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="快速搞定自定义滤镜"><a href="#快速搞定自定义滤镜" class="headerlink" title="快速搞定自定义滤镜"></a>快速搞定自定义滤镜</h2><p>GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。<br>GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即可。查表法实现的前提是颜色的映射与周围的颜色无关，即一种颜色无论周围的颜色为何、无论其位于照片的哪个位置，其目标颜色都应该是相同的。</p>
+<p>RGB的颜色数量表示为255<em>255</em>2555 = 16777216如果要记录每种颜色的映射结果，那么需要一千六百多万条记录，这显然无法应用到实际的工程中。为了简化起见，一般每相近的 4 种颜色采用一条记录存储，这样颜色表只需要 64<em>64</em>64 = 262144 条记录。<br>下面是一张标准的基准颜色表<br><img src="http://ofo2isr3w.bkt.clouddn.com/jizhun" alt=""><br>设计师或产品经理在PS中调整好的效果可能是这样的一组Action<br><img src="http://ofo2isr3w.bkt.clouddn.com/tiaozheng" alt="">  </p>
+<p>将这些调整应用到基准颜色表上就得到了一张映射表<br><img src="http://ofo2isr3w.bkt.clouddn.com/final" alt=""><br>上表将 262144 种颜色分为 8 个块，每块64*64格，每一格的颜色都不同。进行颜色映射时，首先使用数字图像处理软件对该基准颜色表应用要模拟的滤镜来生成映射表（如下图），然后对要处理的照片的每个像素，从基准颜色表中找到该像素颜色的位置，然后在映射表的相应位置就可以得到目的颜色。</p>
+<p>暗角可以使用遮罩的方式（也就是使用png图片）也可以使用这个滤镜GPUImageVignetteFilter</p>
+<p>下面是demo code</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"> -(UIImage *)p_ImageFilterWithFilterName:(NSString *)filterName originImage:(UIImage *)originImage&#123;</div><div class="line"> 2 </div><div class="line"> 3  GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:originImage];</div><div class="line"> 4  GPUImagePicture *lookupImageSource = [[GPUImagePicture alloc] initWithImage:[UIImage imageNamed:filterName]];</div><div class="line"> 5  GPUImageLookupFilter *lookupFilter = [[GPUImageLookupFilter alloc] init];</div><div class="line"> 6  </div><div class="line"> 7  [stillImageSource addTarget:lookupFilter];</div><div class="line"> 8  [lookupImageSource addTarget:lookupFilter];</div><div class="line"> 9  if (self.hasVignetteEffect) &#123;</div><div class="line">10      [lookupFilter useNextFrameForImageCapture];</div><div class="line">11      GPUImageVignetteFilter *vignettefilter = [[GPUImageVignetteFilter alloc] init];</div><div class="line">12      vignettefilter.vignetteEnd = kAlohaImageVignetteEnd;</div><div class="line">13      vignettefilter.vignetteStart = kAlohaImageVignetteStart;</div><div class="line">14      </div><div class="line">15      [lookupFilter addTarget:vignettefilter];</div><div class="line">16      [stillImageSource processImage];</div><div class="line">17      [lookupImageSource processImage];</div><div class="line">18      [vignettefilter useNextFrameForImageCapture];</div><div class="line">19      UIImage *filteredimage = [vignettefilter imageFromCurrentFramebuffer];</div><div class="line">20      return filteredimage;</div><div class="line">21  &#125; else &#123;</div><div class="line">22      [stillImageSource processImage];</div><div class="line">23      [lookupImageSource processImage];</div><div class="line">24      [lookupFilter useNextFrameForImageCapture];</div><div class="line">25      UIImage *filteredimage = [lookupFilter imageFromCurrentFramebuffer];</div><div class="line">26      return filteredimage;</div><div class="line">27  &#125;</div><div class="line">28 &#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/10/14/GPUimage(二)自定义滤镜/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -455,184 +610,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/10/07/GPUimage(一)简介/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="杜鹏飞">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="杜鹏飞的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/10/07/GPUimage(一)简介/" itemprop="url">
-                  GPUImage（一）简介
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-07T17:30:48+08:00">
-                2015-10-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/GPUImage/" itemprop="url" rel="index">
-                    <span itemprop="name">GPUImage</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2015/10/07/GPUimage(一)简介/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/07/GPUimage(一)简介/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="GPUImage简介"><a href="#GPUImage简介" class="headerlink" title="GPUImage简介"></a>GPUImage简介</h2><p>GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像，但我觉得 CoreImage 还是慢)。除了速度上的优势，GPUImage 还提供了很多很棒的图像处理滤镜，但有时候这些基本功能仍然无法满足实际开发中的需求，不用担心 GPUImage 支持自定义滤镜。</p>
-<h2 id="安装GPUImage"><a href="#安装GPUImage" class="headerlink" title="安装GPUImage"></a>安装GPUImage</h2><ol>
-<li>把GPUImage.xcodeproj 拖到你的Xcode project</li>
-<li>在app的target依赖设置里面添加GPUImage作为Target Dependency</li>
-<li>在build phase的Link Binary With Libraries, 把libGPUImage.a加进来.</li>
-<li>添加下面这些系统framework:<br>CoreMedia<br>CoreVideo<br>OpenGLES<br>AVFoundation<br>QuartzCore  </li>
-<li>头文件搜索路径: project’s build settings, 把GPUImage的source和source下的iOS目录加到搜索路径里, 使用相对路径和递归.</li>
-<li>包含下面这个头文件:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#import &quot;GPUImage.h&quot;</div></pre></td></tr></table></figure>
-<h2 id="GPUImage的简单使用"><a href="#GPUImage的简单使用" class="headerlink" title="GPUImage的简单使用"></a>GPUImage的简单使用</h2><h3 id="GPUImage中的有几个概念"><a href="#GPUImage中的有几个概念" class="headerlink" title="GPUImage中的有几个概念"></a>GPUImage中的有几个概念</h3><p>⁃ output，输出源</p>
-<p>⁃ intput，输入源</p>
-<p>⁃ filter，滤镜</p>
-<p>所以一个完整的滤镜处理流程是: output+X+input，X就是滤镜组(1+个滤镜)。GPUImage为了方便，新版本中提供了GPUImageFilterPipeline 这个东西，方便用户使用多个滤镜组合，不用担心前后的链式逻辑。</p>
-<p>输入源是一些GPUImageOutput的子类.包括:<br>(1). GPUImageVideoCamera (for live video from an iOS camera)<br>(2.) GPUImageStillCamera (for taking photos with the camera)<br>(3). GPUImagePicture (for still images)<br>(4). GPUImageMovie (for movies). S  </p>
-<p>输出源可以是GPUImageView, 或者GPUImageMovieWriter<br>一个典型的例子   </p>
-<ol>
-<li>GPUImageVideoCamera -&gt; GPUImageSepiaFilter -&gt; GPUImageView<h3 id="处理流程"><a href="#处理流程" class="headerlink" title="处理流程"></a>处理流程</h3>在使用GPUImage之前先做些准备工作。OpenGL ES程序来处理图片，会有以下几个步骤：<br>1、初始化OpenGL ES环境，编译、链接顶点着色器和片元着色器；<br>2、缓存顶点、纹理坐标数据，传送图像数据到GPU；<br>3、绘制图元到特定的帧缓存；<br>4、在帧缓存取出绘制的图像。<br>GPUImage里面有两个非常重要的类：<br><strong>1 GPUImageFilter</strong>负责的是第一、二、三步。<br><strong>2 GPUImageFramebuffer</strong>负责是第四步。</li>
-</ol>
-<h3 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h3><p>将GPUImageView设置为self.view，根据face.png，设置GPUImagePicture，然后添加GPUImageTiltShiftFilter到响应链，再把GPUImageView作为响应链的终点，最后调用processImage，开始处理图像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">GPUImageView *primaryView = [[GPUImageView alloc] initWithFrame:self.view.frame];</div><div class="line">    self.view = primaryView;</div><div class="line">    UIImage *inputImage = [UIImage imageNamed:@&quot;face.png&quot;];</div><div class="line">    _sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage];</div><div class="line">    _sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];</div><div class="line">    _sepiaFilter.blurRadiusInPixels = 40.0;</div><div class="line">    [_sepiaFilter forceProcessingAtSize:primaryView.sizeInPixels];</div><div class="line">    [_sourcePicture addTarget:_sepiaFilter];</div><div class="line">    [_sepiaFilter addTarget:primaryView];</div><div class="line">    [_sourcePicture processImage];</div></pre></td></tr></table></figure></p>
-<p>使用GPUImage自带的滤镜是远远不能满足需求的，下一篇就要看一下自定义滤镜。</p>
-<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>项目里，发现滤镜模块调用完了以后，内存上去了下不来，反复检查，所有GPUImage相关元素都已经释放了。后来想到了显存，arc环境下，只负责回收oc对象的内存，显存自然需要GPUImage使用者自己来回收，这样也就容易了，翻GPUImage的api，知道</p>
-<p>GPUImageContext中有个framebufferCache：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[[GPUImageContextsharedImageProcessingContext].framebufferCachepurgeAllUnassignedFramebuffers]</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -677,7 +659,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -290,6 +290,175 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/08/06/UICollectionView自定义布局/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/08/06/UICollectionView自定义布局/" itemprop="url">
+                  UICollectionView自定义布局
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-06T15:28:20+08:00">
+                2016-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/06/UICollectionView自定义布局/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/06/UICollectionView自定义布局/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>UICollectionView由于可以custom layout的原因使其非常强大，一个layout能玩出花来。之前有一个非常有名的第三方库iCarousel，效果也很不错，但是由于在性能上还是稍差些。后来就慢慢被UICollectionView取代了。<br>进入正题，我做自定义layout的时候就是看raywenderlich上面的教程，我觉得非常好，就用raywenderlich的demo来记录一下。demo在<a href="http://cdn3.raywenderlich.com/wp-content/uploads/2015/06/Pinterest-final1.zip" target="_blank" rel="external">这里</a>。</p>
+<h2 id="layout和data的关系"><a href="#layout和data的关系" class="headerlink" title="layout和data的关系"></a>layout和data的关系</h2><p><img src="http://ofo2isr3w.bkt.clouddn.com/collectionview.png" alt=""></p>
+<h2 id="核心布局处理"><a href="#核心布局处理" class="headerlink" title="核心布局处理"></a>核心布局处理</h2><p><img src="http://ofo2isr3w.bkt.clouddn.com/layout-lifecycle-667x500.png" alt=""><br>自定义layout，有三个方法必须重写</p>
+<ul>
+<li>func prepareLayout() 在这个方法里计算好每个Item的position和CollectionView的size并缓存</li>
+<li>func collectionViewContentSize() -&gt; CGSize 返回CollectionView的ContentSize</li>
+<li>func layoutAttributesForElementsInRect(rect: CGRect) -&gt; [UICollectionViewLayoutAttributes]?在这个方法里返回某个特定区域的布局的属性</li>
+</ul>
+<h2 id="计算布局的属性"><a href="#计算布局的属性" class="headerlink" title="计算布局的属性"></a>计算布局的属性</h2><p>获取cell各个控件的高度以及header的高度，使用代理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@objc protocol WeiouDetailCollectionViewLayoutDelegate &#123;</div><div class="line">     Method to ask the delegate for the height of the image</div><div class="line">    func collectionView(collectionView:UICollectionView, heightForPhotoAtIndexPath indexPath:NSIndexPath , withWidth:CGFloat) -&gt; CGFloat</div><div class="line">     Method to ask the delegate for the height of the annotation text</div><div class="line">    func collectionView(collectionView: UICollectionView, heightForAnnotationAtIndexPath indexPath: NSIndexPath, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    </div><div class="line">    </div><div class="line">    func collectionView(collectionView: UICollectionView, heightForShortAddrAtIndexPath indexPath: NSIndexPath, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    </div><div class="line">    for header</div><div class="line">    func collectionViewHeightForHeadrPicture(collectionView: UICollectionView, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">override func prepareLayout() &#123;</div><div class="line">    // 1. Only calculate once</div><div class="line">    if cache.isEmpty &#123;</div><div class="line"></div><div class="line">      // 2. Pre-Calculates the X Offset for every column and adds an array to increment the currently max Y Offset for each column</div><div class="line">      // 每列宽度</div><div class="line">      let columnWidth = contentWidth / CGFloat(numberOfColumns)</div><div class="line">      var xOffset = [CGFloat]()</div><div class="line">      // 其实就是xOffset就是两个,都是固定的.</div><div class="line">      for column in 0 ..&lt; numberOfColumns &#123;</div><div class="line">        xOffset.append(CGFloat(column) * columnWidth )</div><div class="line">      &#125;</div><div class="line">      var column = 0</div><div class="line">      var yOffset = [CGFloat](count: numberOfColumns, repeatedValue: 0)</div><div class="line"></div><div class="line">      // 3. Iterates through the list of items in the first section</div><div class="line">      for item in 0 ..&lt; collectionView!.numberOfItemsInSection(0) &#123;</div><div class="line"></div><div class="line">        let indexPath = NSIndexPath(forItem: item, inSection: 0)</div><div class="line"></div><div class="line">        // 4. Asks the delegate for the height of the picture and the annotation and calculates the cell frame.</div><div class="line">        // 这个width是为了计算comment的长度的.</div><div class="line">        let width = columnWidth - cellPadding*2</div><div class="line">        let photoHeight = delegate.collectionView(collectionView!, heightForPhotoAtIndexPath: indexPath , withWidth:width)</div><div class="line">        let annotationHeight = delegate.collectionView(collectionView!, heightForAnnotationAtIndexPath: indexPath, withWidth: width)</div><div class="line">        let height = cellPadding +  photoHeight + annotationHeight + cellPadding</div><div class="line">        let frame = CGRect(x: xOffset[column], y: yOffset[column], width: columnWidth, height: height)</div><div class="line">        let insetFrame = CGRectInset(frame, cellPadding, cellPadding)</div><div class="line"></div><div class="line">        // 5. Creates an UICollectionViewLayoutItem with the frame and add it to the cache</div><div class="line">        let attributes = PinterestLayoutAttributes(forCellWithIndexPath: indexPath)</div><div class="line">        attributes.photoHeight = photoHeight</div><div class="line">        attributes.frame = insetFrame</div><div class="line">        cache.append(attributes)</div><div class="line"></div><div class="line">        // 6. Updates the collection view content height</div><div class="line">        contentHeight = max(contentHeight, CGRectGetMaxY(frame))</div><div class="line">        yOffset[column] = yOffset[column] + height</div><div class="line"></div><div class="line">        column = column &gt;= (numberOfColumns - 1) ? 0 : ++column</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>还是上图吧，一图胜千言</p>
+<p><img src="http://ofo2isr3w.bkt.clouddn.com/107041-fcc6dc95c323ca39.jpg" alt=""></p>
+<p>在layout中，没有列的概念，就是很机械的按照规则排列下去，主要Y值的计算。虚拟了一个列的概念<br><code>column = column &gt;= (numberOfColumns - 1) ? 0 : ++column</code><br>理解一下</p>
+<h2 id="返回布局的ContentSize"><a href="#返回布局的ContentSize" class="headerlink" title="返回布局的ContentSize"></a>返回布局的ContentSize</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//需要返回的是整个collectionView高度，包括header, footer, cell</div><div class="line"></div><div class="line">    override func collectionViewContentSize() -&gt; CGSize &#123;</div><div class="line">        return CGSize(width: contentWidth, height: contentHeight)</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="重写layoutAttributesForElementsInRect"><a href="#重写layoutAttributesForElementsInRect" class="headerlink" title="重写layoutAttributesForElementsInRect(_:)"></a>重写layoutAttributesForElementsInRect(_:)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">override func layoutAttributesForElementsInRect(rect: CGRect) -&gt; [UICollectionViewLayoutAttributes]? &#123;</div><div class="line">       </div><div class="line">       var layoutAttributes = [UICollectionViewLayoutAttributes]()</div><div class="line">       </div><div class="line">       if CGRectIntersectsRect(headerAttributes.frame, rect ) &#123;</div><div class="line">           layoutAttributes.append(headerAttributes)</div><div class="line">       &#125;</div><div class="line">       </div><div class="line">       </div><div class="line">       // Loop through the cache and look for items in the rect</div><div class="line">       for attributes  in cache &#123;</div><div class="line">           if CGRectIntersectsRect(attributes.frame, rect ) &#123;</div><div class="line">               layoutAttributes.append(attributes)</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       return layoutAttributes</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>有header footer的话一定要加上！！！</p>
+<h2 id="关于获取高度的代理方法"><a href="#关于获取高度的代理方法" class="headerlink" title="关于获取高度的代理方法"></a>关于获取高度的代理方法</h2><p>主要是图片，纯文本，富文本的高度，方法Google一下就知道了，很简单。富文本的高度计算坑比较大，另开一篇说吧。。。</p>
+<h2 id="更新约束"><a href="#更新约束" class="headerlink" title="更新约束"></a>更新约束</h2><p>最后，在自定义的cell，header里调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-(void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes</div></pre></td></tr></table></figure>
+<p>更新约束，然后，大功告成！</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/06/20/性能优化小结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -584,187 +753,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/03/10/关于layoutSubviews和drawRect/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="杜鹏飞">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="杜鹏飞的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/03/10/关于layoutSubviews和drawRect/" itemprop="url">
-                  关于layoutSubviews和drawRect
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-10T18:24:43+08:00">
-                2016-03-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/03/10/关于layoutSubviews和drawRect/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/10/关于layoutSubviews和drawRect/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>首先两个方法都是异步执行。layoutSubviews方便数据计算，drawRect方便视图重绘。</p>
-<h4 id="layoutSubviews在以下情况下会被调用："><a href="#layoutSubviews在以下情况下会被调用：" class="headerlink" title="layoutSubviews在以下情况下会被调用："></a>layoutSubviews在以下情况下会被调用：</h4><ul>
-<li>1、init初始化不会触发layoutSubviews。</li>
-<li>2、addSubview会触发layoutSubviews。</li>
-<li>3、设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。</li>
-<li>4、滚动一个UIScrollView会触发layoutSubviews。</li>
-<li>5、旋转Screen会触发父UIView上的layoutSubviews事件。</li>
-<li>6、改变一个UIView大小的时候也会触发父UIView上的layoutSubviews事件。</li>
-<li>7、直接调用setLayoutSubviews。</li>
-</ul>
-<h4 id="drawRect在以下情况下会被调用："><a href="#drawRect在以下情况下会被调用：" class="headerlink" title="drawRect在以下情况下会被调用："></a>drawRect在以下情况下会被调用：</h4><ul>
-<li>1、如果在UIView初始化时没有设置rect大小，将直接导致drawRect不被自动调用。drawRect 掉用是在Controller-&gt;loadView, Controller-&gt;viewDidLoad 两方法之后掉用的.所以不用担心在 控制器中,这些View的drawRect就开始画了.这样可以在控制器中设置一些值给View(如果这些View draw的时候需要用到某些变量 值).</li>
-<li>2、该方法在调用sizeToFit后被调用，所以可以先调用sizeToFit计算出size。然后系统自动调用drawRect:方法。</li>
-<li>3、通过设置contentMode属性值为UIViewContentModeRedraw。那么将在每次设置或更改frame的时候自动调用drawRect:。</li>
-<li>4、直接调用setNeedsDisplay，或者setNeedsDisplayInRect:触发drawRect:，但是有个前提条件是rect不能为0。</li>
-</ul>
-<blockquote>
-<p>以上1,2推荐；而3,4不提倡</p>
-</blockquote>
-<h6 id="drawRect方法使用注意点："><a href="#drawRect方法使用注意点：" class="headerlink" title="drawRect方法使用注意点："></a>drawRect方法使用注意点：</h6><ul>
-<li><p>1、 若使用UIView绘图，只能在drawRect：方法中获取相应的contextRef并绘图。如果在其他方法中获取将获取到一个invalidate 的ref并且不能用于画图。drawRect：方法不能手动显示调用，必须通过调用setNeedsDisplay 或 者 setNeedsDisplayInRect，让系统自动调该方法。</p>
-</li>
-<li><p>2、若使用calayer绘图，只能在drawInContext: 中（类似鱼drawRect）绘制，或者在delegate中的相应方法绘制。同样也是调用setNeedDisplay等间接调用以上方法 3、若要实时画图，不能使用gestureRecognizer，只能使用touchbegan等方法来掉用setNeedsDisplay实时刷新屏幕</p>
-</li>
-</ul>
-<hr>
-<hr>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -809,7 +802,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
