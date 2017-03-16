@@ -251,16 +251,6 @@
           </a>
         </li>
       
-        
-        <li class="menu-item menu-item-commonweal">
-          <a href="/404.html" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
-            
-            公益404
-          </a>
-        </li>
-      
 
       
     </ul>
@@ -290,7 +280,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/03/10/关于layoutSubviews和drawRect/">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/03/13/关键词备忘/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杜鹏飞">
@@ -312,8 +302,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/03/10/关于layoutSubviews和drawRect/" itemprop="url">
-                  关于layoutSubviews和drawRect
+                <a class="post-title-link" href="/2015/03/13/关键词备忘/" itemprop="url">
+                  关键词备忘
                 </a>
               
             
@@ -329,8 +319,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-10T18:24:43+08:00">
-                2016-03-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-13T12:14:43+08:00">
+                2015-03-13
               </time>
             
 
@@ -370,8 +360,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/03/10/关于layoutSubviews和drawRect/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/10/关于layoutSubviews和drawRect/" itemprop="commentCount"></span>
+                <a href="/2015/03/13/关键词备忘/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/13/关键词备忘/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -399,35 +389,26 @@
       
         
           
-            <p>首先两个方法都是异步执行。layoutSubviews方便数据计算，drawRect方便视图重绘。</p>
-<h4 id="layoutSubviews在以下情况下会被调用："><a href="#layoutSubviews在以下情况下会被调用：" class="headerlink" title="layoutSubviews在以下情况下会被调用："></a>layoutSubviews在以下情况下会被调用：</h4><ul>
-<li>1、init初始化不会触发layoutSubviews。</li>
-<li>2、addSubview会触发layoutSubviews。</li>
-<li>3、设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。</li>
-<li>4、滚动一个UIScrollView会触发layoutSubviews。</li>
-<li>5、旋转Screen会触发父UIView上的layoutSubviews事件。</li>
-<li>6、改变一个UIView大小的时候也会触发父UIView上的layoutSubviews事件。</li>
-<li>7、直接调用setLayoutSubviews。</li>
-</ul>
-<h4 id="drawRect在以下情况下会被调用："><a href="#drawRect在以下情况下会被调用：" class="headerlink" title="drawRect在以下情况下会被调用："></a>drawRect在以下情况下会被调用：</h4><ul>
-<li>1、如果在UIView初始化时没有设置rect大小，将直接导致drawRect不被自动调用。drawRect 掉用是在Controller-&gt;loadView, Controller-&gt;viewDidLoad 两方法之后掉用的.所以不用担心在 控制器中,这些View的drawRect就开始画了.这样可以在控制器中设置一些值给View(如果这些View draw的时候需要用到某些变量 值).</li>
-<li>2、该方法在调用sizeToFit后被调用，所以可以先调用sizeToFit计算出size。然后系统自动调用drawRect:方法。</li>
-<li>3、通过设置contentMode属性值为UIViewContentModeRedraw。那么将在每次设置或更改frame的时候自动调用drawRect:。</li>
-<li>4、直接调用setNeedsDisplay，或者setNeedsDisplayInRect:触发drawRect:，但是有个前提条件是rect不能为0。</li>
-</ul>
-<blockquote>
-<p>以上1,2推荐；而3,4不提倡</p>
-</blockquote>
-<h6 id="drawRect方法使用注意点："><a href="#drawRect方法使用注意点：" class="headerlink" title="drawRect方法使用注意点："></a>drawRect方法使用注意点：</h6><ul>
-<li><p>1、 若使用UIView绘图，只能在drawRect：方法中获取相应的contextRef并绘图。如果在其他方法中获取将获取到一个invalidate 的ref并且不能用于画图。drawRect：方法不能手动显示调用，必须通过调用setNeedsDisplay 或 者 setNeedsDisplayInRect，让系统自动调该方法。</p>
-</li>
-<li><p>2、若使用calayer绘图，只能在drawInContext: 中（类似鱼drawRect）绘制，或者在delegate中的相应方法绘制。同样也是调用setNeedDisplay等间接调用以上方法 3、若要实时画图，不能使用gestureRecognizer，只能使用touchbegan等方法来掉用setNeedsDisplay实时刷新屏幕</p>
-</li>
-</ul>
-<hr>
-<hr>
+          在做开发的过程中经常见到各种关键词，罗列出一些常用的关键字以供翻阅备忘。
 
-          
+
+
+关键字
+总结
+
+
+
+
+atomic
+atomic是Objc使用的一种线程保护技术，基本上来讲，是防止在写未完成的时候被另外一个线程读取，造成数据错误。而这种机制是耗费系统资源的，所以在iPhone这种小型设备上，如果没有
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/03/13/关键词备忘/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -466,7 +447,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/01/17/总结一下多线程/">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/03/02/网络开发总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杜鹏飞">
@@ -488,8 +469,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/01/17/总结一下多线程/" itemprop="url">
-                  总结一下多线程
+                <a class="post-title-link" href="/2015/03/02/网络开发总结/" itemprop="url">
+                  网络开发总结
                 </a>
               
             
@@ -505,8 +486,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-17T00:38:40+08:00">
-                2016-01-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-03-02T01:08:11+08:00">
+                2015-03-02
               </time>
             
 
@@ -546,8 +527,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/01/17/总结一下多线程/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/17/总结一下多线程/" itemprop="commentCount"></span>
+                <a href="/2015/03/02/网络开发总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/02/网络开发总结/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -575,23 +556,185 @@
       
         
           
-            <h2 id="线程和进程"><a href="#线程和进程" class="headerlink" title="线程和进程"></a>线程和进程</h2><h4 id="1-什么是进程"><a href="#1-什么是进程" class="headerlink" title="1.什么是进程"></a>1.什么是进程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">进程是指在系统中正在运行的一个应用程序</div><div class="line"></div><div class="line">每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内</div><div class="line"></div><div class="line">比如同时打开QQ、Xcode，系统就会分别启动2个进程</div><div class="line"></div><div class="line">通过“活动监视器”可以查看Mac系统中所开启的进程</div></pre></td></tr></table></figure>
-<h4 id="2-什么是线程"><a href="#2-什么是线程" class="headerlink" title="2.什么是线程"></a>2.什么是线程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">1个进程要想执行任务，必须得有线程（每1个进程至少要有1条线程）</div><div class="line"></div><div class="line">线程是进程的基本执行单元，一个进程（程序）的所有任务都在线程中执行</div><div class="line"></div><div class="line">比如使用酷狗播放音乐、使用迅雷下载电影，都需要在线程中执行</div></pre></td></tr></table></figure>
-<h4 id="3-线程的串行"><a href="#3-线程的串行" class="headerlink" title="3.线程的串行"></a>3.线程的串行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1个线程中任务的执行是串行的</div><div class="line"></div><div class="line">如果要在1个线程中执行多个任务，那么只能一个一个地按顺序执行这些任务</div><div class="line"></div><div class="line">也就是说，在同一时间内，1个线程只能执行1个任务</div><div class="line"></div><div class="line">比如在1个线程中下载3个文件（分别是文件A、文件B、文件C）</div></pre></td></tr></table></figure>
-<h2 id="二、多线程"><a href="#二、多线程" class="headerlink" title="二、多线程"></a>二、多线程</h2><h4 id="1-什么是多线程"><a href="#1-什么是多线程" class="headerlink" title="1.什么是多线程"></a>1.什么是多线程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1个进程中可以开启多条线程，每条线程可以并行（同时）执行不同的任务</div><div class="line"></div><div class="line">进程 -&gt;车间，线程-&gt;车间工人</div><div class="line"></div><div class="line">多线程技术可以提高程序的执行效率</div><div class="line"></div><div class="line">比如同时开启3条线程分别下载3个文件（分别是文件A、文件B、文件C）</div></pre></td></tr></table></figure>
-<h4 id="2-多线程的原理"><a href="#2-多线程的原理" class="headerlink" title="2.多线程的原理"></a>2.多线程的原理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">同一时间，CPU只能处理1条线程，只有1条线程在工作（执行）</div><div class="line">多线程并发（同时）执行，其实是CPU快速地在多条线程之间调度（切换）</div><div class="line">如果CPU调度线程的时间足够快，就造成了多线程并发执行的假象</div><div class="line">思考：如果线程非常非常多，会发生什么情况？</div><div class="line">CPU会在N多线程之间调度，CPU会累死，消耗大量的CPU资源</div><div class="line">每条线程被调度执行的频次会降低（线程的执行效率降低）</div></pre></td></tr></table></figure>
-<h4 id="3-多线程的优缺点"><a href="#3-多线程的优缺点" class="headerlink" title="3.多线程的优缺点"></a>3.多线程的优缺点</h4><p>多线程的优点</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">能适当提高程序的执行效率</div><div class="line"></div><div class="line">能适当提高资源利用率（CPU、内存利用率）</div></pre></td></tr></table></figure>
-<p>多线程的缺点</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">开启线程需要占用一定的内存空间（默认情况下，主线程占用1M，子线程占用512KB），如果开启大量的线程，会占用大量的内存空间，降低程序的性能</div><div class="line"></div><div class="line">线程越多，CPU在调度线程上的开销就越大</div><div class="line"></div><div class="line">程序设计更加复杂：比如线程之间的通信、多线程的数据共享</div></pre></td></tr></table></figure>
-<h4 id="4-多线程在iOS开发中的应用"><a href="#4-多线程在iOS开发中的应用" class="headerlink" title="4.多线程在iOS开发中的应用"></a>4.多线程在iOS开发中的应用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">主线程:一个iOS程序运行后，默认会开启1条线程，称为“主线程”或“UI线程”</div><div class="line"></div><div class="line">主线程的主要作用</div><div class="line"></div><div class="line">显示\刷新UI界面</div><div class="line"></div><div class="line">处理UI事件（比如点击事件、滚动事件、拖拽事件等）</div></pre></td></tr></table></figure>
-<p>主线程的使用注意:别将比较耗时的操作放到主线程中。</p>
-<p>耗时操作会卡住主线程，严重影响UI的流畅度，给用户一种“卡”的坏体验</p>
-<h2 id="多线程的四中方式"><a href="#多线程的四中方式" class="headerlink" title="多线程的四中方式"></a>多线程的四中方式</h2><h4 id="1-Pthreads"><a href="#1-Pthreads" class="headerlink" title="1. Pthreads"></a>1. Pthreads</h4><h4 id="2-NSThread"><a href="#2-NSThread" class="headerlink" title="2. NSThread"></a>2. NSThread</h4><h4 id="3-GCD"><a href="#3-GCD" class="headerlink" title="3. GCD"></a>3. GCD</h4><h4 id="4-NSOperation-amp-NSOperationQueue"><a href="#4-NSOperation-amp-NSOperationQueue" class="headerlink" title="4. NSOperation &amp; NSOperationQueue"></a>4. NSOperation &amp; NSOperationQueue</h4><h2 id="多线程的全解析-看了不信你还不会？"><a href="#多线程的全解析-看了不信你还不会？" class="headerlink" title="多线程的全解析-看了不信你还不会？"></a>多线程的全解析-看了不信你还不会？</h2><p><img src="http://ofo2isr3w.bkt.clouddn.com/multithread.png" alt=""></p>
-<hr>
-<hr>
+          一、一个HTTP请求的基本要素1.请求URL：客户端通过哪个路径找到服务器
+2.请求参数：客户端发送给服务器的数据
+
+比如登录时需要发送的用户名和密码
+
+3.返回结果：服务器返回给客户端的数据
+
+一般是JSON数据或者XML数据
+
+二、基本的HTTP请求的步骤（移动客户端）1.拼接”请求URL” +
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/03/02/网络开发总结/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/01/22/ViewController生命周期/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/01/22/ViewController生命周期/" itemprop="url">
+                  ViewController生命周期
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-01-22T00:38:40+08:00">
+                2015-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/01/22/ViewController生命周期/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/22/ViewController生命周期/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          ViewController的生命周期ARC环境
+单个viewController的生命周期
+initWithCoder:(NSCoder *)aDecoder：（如果使用storyboard或者xib）
+loadView：加载view
+viewDidLoad：view加载完毕
+viewWillAp
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/01/22/ViewController生命周期/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -625,7 +768,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
   </nav>
 
 

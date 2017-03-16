@@ -251,16 +251,6 @@
           </a>
         </li>
       
-        
-        <li class="menu-item menu-item-commonweal">
-          <a href="/404.html" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
-            
-            公益404
-          </a>
-        </li>
-      
 
       
     </ul>
@@ -290,7 +280,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/08/06/UICollectionView自定义布局/">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/01/17/总结一下多线程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杜鹏飞">
@@ -312,8 +302,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/08/06/UICollectionView自定义布局/" itemprop="url">
-                  UICollectionView自定义布局
+                <a class="post-title-link" href="/2016/01/17/总结一下多线程/" itemprop="url">
+                  总结一下多线程
                 </a>
               
             
@@ -329,8 +319,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-06T15:28:20+08:00">
-                2016-08-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-17T00:38:40+08:00">
+                2016-01-17
               </time>
             
 
@@ -370,8 +360,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/08/06/UICollectionView自定义布局/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/06/UICollectionView自定义布局/" itemprop="commentCount"></span>
+                <a href="/2016/01/17/总结一下多线程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/17/总结一下多线程/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -399,28 +389,16 @@
       
         
           
-            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>UICollectionView由于可以custom layout的原因使其非常强大，一个layout能玩出花来。之前有一个非常有名的第三方库iCarousel，效果也很不错，但是由于在性能上还是稍差些。后来就慢慢被UICollectionView取代了。<br>进入正题，我做自定义layout的时候就是看raywenderlich上面的教程，我觉得非常好，就用raywenderlich的demo来记录一下。demo在<a href="http://cdn3.raywenderlich.com/wp-content/uploads/2015/06/Pinterest-final1.zip" target="_blank" rel="external">这里</a>。</p>
-<h2 id="layout和data的关系"><a href="#layout和data的关系" class="headerlink" title="layout和data的关系"></a>layout和data的关系</h2><p><img src="http://ofo2isr3w.bkt.clouddn.com/collectionview.png" alt=""></p>
-<h2 id="核心布局处理"><a href="#核心布局处理" class="headerlink" title="核心布局处理"></a>核心布局处理</h2><p><img src="http://ofo2isr3w.bkt.clouddn.com/layout-lifecycle-667x500.png" alt=""><br>自定义layout，有三个方法必须重写</p>
-<ul>
-<li>func prepareLayout() 在这个方法里计算好每个Item的position和CollectionView的size并缓存</li>
-<li>func collectionViewContentSize() -&gt; CGSize 返回CollectionView的ContentSize</li>
-<li>func layoutAttributesForElementsInRect(rect: CGRect) -&gt; [UICollectionViewLayoutAttributes]?在这个方法里返回某个特定区域的布局的属性</li>
-</ul>
-<h2 id="计算布局的属性"><a href="#计算布局的属性" class="headerlink" title="计算布局的属性"></a>计算布局的属性</h2><p>获取cell各个控件的高度以及header的高度，使用代理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@objc protocol WeiouDetailCollectionViewLayoutDelegate &#123;</div><div class="line">     Method to ask the delegate for the height of the image</div><div class="line">    func collectionView(collectionView:UICollectionView, heightForPhotoAtIndexPath indexPath:NSIndexPath , withWidth:CGFloat) -&gt; CGFloat</div><div class="line">     Method to ask the delegate for the height of the annotation text</div><div class="line">    func collectionView(collectionView: UICollectionView, heightForAnnotationAtIndexPath indexPath: NSIndexPath, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    </div><div class="line">    </div><div class="line">    func collectionView(collectionView: UICollectionView, heightForShortAddrAtIndexPath indexPath: NSIndexPath, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    </div><div class="line">    for header</div><div class="line">    func collectionViewHeightForHeadrPicture(collectionView: UICollectionView, withWidth width: CGFloat) -&gt; CGFloat</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">override func prepareLayout() &#123;</div><div class="line">    // 1. Only calculate once</div><div class="line">    if cache.isEmpty &#123;</div><div class="line"></div><div class="line">      // 2. Pre-Calculates the X Offset for every column and adds an array to increment the currently max Y Offset for each column</div><div class="line">      // 每列宽度</div><div class="line">      let columnWidth = contentWidth / CGFloat(numberOfColumns)</div><div class="line">      var xOffset = [CGFloat]()</div><div class="line">      // 其实就是xOffset就是两个,都是固定的.</div><div class="line">      for column in 0 ..&lt; numberOfColumns &#123;</div><div class="line">        xOffset.append(CGFloat(column) * columnWidth )</div><div class="line">      &#125;</div><div class="line">      var column = 0</div><div class="line">      var yOffset = [CGFloat](count: numberOfColumns, repeatedValue: 0)</div><div class="line"></div><div class="line">      // 3. Iterates through the list of items in the first section</div><div class="line">      for item in 0 ..&lt; collectionView!.numberOfItemsInSection(0) &#123;</div><div class="line"></div><div class="line">        let indexPath = NSIndexPath(forItem: item, inSection: 0)</div><div class="line"></div><div class="line">        // 4. Asks the delegate for the height of the picture and the annotation and calculates the cell frame.</div><div class="line">        // 这个width是为了计算comment的长度的.</div><div class="line">        let width = columnWidth - cellPadding*2</div><div class="line">        let photoHeight = delegate.collectionView(collectionView!, heightForPhotoAtIndexPath: indexPath , withWidth:width)</div><div class="line">        let annotationHeight = delegate.collectionView(collectionView!, heightForAnnotationAtIndexPath: indexPath, withWidth: width)</div><div class="line">        let height = cellPadding +  photoHeight + annotationHeight + cellPadding</div><div class="line">        let frame = CGRect(x: xOffset[column], y: yOffset[column], width: columnWidth, height: height)</div><div class="line">        let insetFrame = CGRectInset(frame, cellPadding, cellPadding)</div><div class="line"></div><div class="line">        // 5. Creates an UICollectionViewLayoutItem with the frame and add it to the cache</div><div class="line">        let attributes = PinterestLayoutAttributes(forCellWithIndexPath: indexPath)</div><div class="line">        attributes.photoHeight = photoHeight</div><div class="line">        attributes.frame = insetFrame</div><div class="line">        cache.append(attributes)</div><div class="line"></div><div class="line">        // 6. Updates the collection view content height</div><div class="line">        contentHeight = max(contentHeight, CGRectGetMaxY(frame))</div><div class="line">        yOffset[column] = yOffset[column] + height</div><div class="line"></div><div class="line">        column = column &gt;= (numberOfColumns - 1) ? 0 : ++column</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>还是上图吧，一图胜千言</p>
-<p><img src="http://ofo2isr3w.bkt.clouddn.com/107041-fcc6dc95c323ca39.jpg" alt=""></p>
-<p>在layout中，没有列的概念，就是很机械的按照规则排列下去，主要Y值的计算。虚拟了一个列的概念<br><code>column = column &gt;= (numberOfColumns - 1) ? 0 : ++column</code><br>理解一下</p>
-<h2 id="返回布局的ContentSize"><a href="#返回布局的ContentSize" class="headerlink" title="返回布局的ContentSize"></a>返回布局的ContentSize</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//需要返回的是整个collectionView高度，包括header, footer, cell</div><div class="line"></div><div class="line">    override func collectionViewContentSize() -&gt; CGSize &#123;</div><div class="line">        return CGSize(width: contentWidth, height: contentHeight)</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<h2 id="重写layoutAttributesForElementsInRect"><a href="#重写layoutAttributesForElementsInRect" class="headerlink" title="重写layoutAttributesForElementsInRect(_:)"></a>重写layoutAttributesForElementsInRect(_:)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">override func layoutAttributesForElementsInRect(rect: CGRect) -&gt; [UICollectionViewLayoutAttributes]? &#123;</div><div class="line">       </div><div class="line">       var layoutAttributes = [UICollectionViewLayoutAttributes]()</div><div class="line">       </div><div class="line">       if CGRectIntersectsRect(headerAttributes.frame, rect ) &#123;</div><div class="line">           layoutAttributes.append(headerAttributes)</div><div class="line">       &#125;</div><div class="line">       </div><div class="line">       </div><div class="line">       // Loop through the cache and look for items in the rect</div><div class="line">       for attributes  in cache &#123;</div><div class="line">           if CGRectIntersectsRect(attributes.frame, rect ) &#123;</div><div class="line">               layoutAttributes.append(attributes)</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       return layoutAttributes</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>有header footer的话一定要加上！！！</p>
-<h2 id="关于获取高度的代理方法"><a href="#关于获取高度的代理方法" class="headerlink" title="关于获取高度的代理方法"></a>关于获取高度的代理方法</h2><p>主要是图片，纯文本，富文本的高度，方法Google一下就知道了，很简单。富文本的高度计算坑比较大，另开一篇说吧。。。</p>
-<h2 id="更新约束"><a href="#更新约束" class="headerlink" title="更新约束"></a>更新约束</h2><p>最后，在自定义的cell，header里调用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-(void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes</div></pre></td></tr></table></figure>
-<p>更新约束，然后，大功告成！</p>
-
-          
+          线程和进程1.什么是进程1234567进程是指在系统中正在运行的一个应用程序每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内比如同时打开QQ、Xcode，系统就会分别启动2个进程通过“活动监视器”可以查看Mac系统中所开启的进程
+2.什么是线程123451个进程要想执行任务，必须得有
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/01/17/总结一下多线程/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -459,7 +437,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2016/06/20/性能优化小结/">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/10/18/GPUimage(三)快速搞定自定义滤镜/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="杜鹏飞">
@@ -481,8 +459,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/06/20/性能优化小结/" itemprop="url">
-                  性能优化小结
+                <a class="post-title-link" href="/2015/10/18/GPUimage(三)快速搞定自定义滤镜/" itemprop="url">
+                  GPUImage（三）快速搞定自定义滤镜
                 </a>
               
             
@@ -498,8 +476,476 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-20T16:14:40+08:00">
-                2016-06-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-18T22:21:34+08:00">
+                2015-10-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GPUImage/" itemprop="url" rel="index">
+                    <span itemprop="name">GPUImage</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/18/GPUimage(三)快速搞定自定义滤镜/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/18/GPUimage(三)快速搞定自定义滤镜/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          快速搞定自定义滤镜GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/10/18/GPUimage(三)快速搞定自定义滤镜/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/10/14/GPUimage(二)自定义滤镜/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/10/14/GPUimage(二)自定义滤镜/" itemprop="url">
+                  GPUImage（二）自定义滤镜
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-14T18:32:33+08:00">
+                2015-10-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GPUImage/" itemprop="url" rel="index">
+                    <span itemprop="name">GPUImage</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/14/GPUimage(二)自定义滤镜/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/14/GPUimage(二)自定义滤镜/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          自定义滤镜GPUImage 自定义滤镜需要使用 OpenGL 着色语言( GLSL )编写 Fragment Shader（片段着色器），除此之外你可能还需要一点点图像处理相关的知识。下面我将尝试通过 GPUImage 中的 GPUImageColorInvertFilter(反色滤镜)来讲解一下它
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/10/14/GPUimage(二)自定义滤镜/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/10/07/GPUimage(一)简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/10/07/GPUimage(一)简介/" itemprop="url">
+                  GPUImage（一）简介
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-07T17:30:48+08:00">
+                2015-10-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GPUImage/" itemprop="url" rel="index">
+                    <span itemprop="name">GPUImage</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/10/07/GPUimage(一)简介/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/07/GPUimage(一)简介/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          GPUImage简介GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/10/07/GPUimage(一)简介/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2015/06/15/block深究/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/06/15/block深究/" itemprop="url">
+                  Block深究
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-06-15T18:32:11+08:00">
+                2015-06-15
               </time>
             
 
@@ -539,8 +985,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/06/20/性能优化小结/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/20/性能优化小结/" itemprop="commentCount"></span>
+                <a href="/2015/06/15/block深究/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/15/block深究/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -567,163 +1013,54 @@
 
       
         
-          
-            <ul>
-<li>用ARC管理内存 ARC(Automatic Reference Counting, 自动引用计数)和iOS5一起发布，它避免了最常见的也就是经常是由于我们忘记释放内存所造成的内存泄露。它自动为你管理retain和release的过程，所以你就不必去手动干预了。 除了帮你避免内存泄露，ARC还可以帮你提高性能，它能保证释放掉不再需要的对象的内存<em>   在正确的地方使用reuseIdentifier 这个方法把那些已经存在的cell从队列中排除，或者在必要时使用先前注册的nib或者class创造新的cell。如果没有可重用的cell，你也没有注册一个class或者nib的话，这个方法返回nil。</em>   尽可能使Views不透明 如果你有不透明的Views，你应该设置它们的opaque属性为YES。 (opaque)这个属性给渲染系统提供了一个如何处理这个view的提示。如果设为YES， 渲染系统就认为这个view是完全不透明的，这使得渲染系统优化一些渲染过程和提高性能。如果设置为NO，渲染系统正常地和其它内容组成这个View。默认值是YES。</li>
-</ul>
-<p>在相对比较静止的画面中，设置这个属性不会有太大影响。然而当这个view嵌在scroll view里边，或者是一个复杂动画的一部分，不设置这个属性的话会在很大程度上影响app的性能。</p>
-<p>你可以在模拟器中用Debug\Color Blended Layers选项来发现哪些view没有被设置为opaque。目标就是，能设为opaque的就全设为opaque!</p>
-<ol>
-<li><p>避免庞大的XIB（一次性加载）</p>
-<p>如果你不得不XIB的话，使他们尽量简单。尝试为每个Controller配置一个单独的XIB，尽可能把一个View Controller的view层次结构分散到单独的XIB中去。 原因是这会使系统用一个最优的方式渲染这些views。这个简单的属性在IB或者代码里都可以设定。</p>
-<p>需要注意的是，当你加载一个XIB的时候所有内容都被放在了内存里，包括任何图片。如果有一个不会即刻用到的view，你这就是在浪费宝贵的内存资源了。Storyboards就是另一码事儿了，storyboard仅在需要时实例化一个view controller.</p>
-<p>当家在XIB是，所有图片都被chache，如果你在做OS X开发的话，声音文件也是。Apple在相关文档中的记述是： 当你加载一个引用了图片或者声音资源的nib时，nib加载代码会把图片和声音文件写进内存。在OS X中，图片和声音资源被缓存在named cache中以便将来用到时获取。在iOS中，仅图片资源会被存进named caches。取决于你所在的平台，使用NSImage 或UIImage 的<code>imageNamed:</code>方法来获取图片资源。</p>
-</li>
-<li><p>不要block主线程（主：UI） 永远不要使主线程承担过多。因为UIKit在主线程上做所有工作，渲染，管理触摸反应，回应输入等都需要在它上面完成 大部分阻碍主进程的情形是你的app在做一些牵涉到读写外部资源的I/O操作，比如存储或者网络。</p>
-</li>
-</ol>
-<p>你可以使用<code>NSURLConnection</code>异步地做网络操作: 或者使用像 AFNetworking这样的框架来异步地做这些操作。</p>
-<p>如果你需要做其它类型的需要耗费巨大资源的操作(比如时间敏感的计算或者存储读写)那就用 Grand Central Dispatch，或者 NSOperation 和 NSOperationQueues.</p>
-<ol>
-<li><p>在Image Views中调整图片大小(与控件对应) 如果要在<code>UIImageView</code>中显示一个来自bundle的图片，你应保证图片的大小和UIImageView的大小相同。在运行中缩放图片是很耗费资源的，特别是<code>UIImageView</code>嵌套在<code>UIScrollView</code>中的情况下。</p>
-<p>如果图片是从远端服务加载的你不能控制图片大小，比如在下载前调整到合适大小的话，你可以在下载完成后，最好是用background thread，缩放一次，然后在UIImageView中使用缩放后的图片。</p>
-</li>
-<li><p>选择正确的Collection（Arrays: 有序的一组值。使用index来lookup很快，使用value lookup很慢， 插入/删除很慢。Dictionaries: 存储键值对。 用键来查找比较快。Sets: 无序的一组值。用值来查找很快，插入/删除很快。）</p>
-</li>
-<li>打开gzip压缩 （服务端和你的app） 好消息是，iOS已经在NSURLConnection中默认支持了gzip压缩，当然AFNetworking这些基于它的框架亦然。像Google App Engine这些云服务提供者也已经支持了压缩输出</li>
-<li><p>重用和延迟加载Views 这里我们用到的技巧就是模仿<code>UITableView</code>和<code>UICollectionView</code>的操作: 不要一次创建所有的subview，而是当需要时才创建，当它们完成了使命，把他们放进一个可重用的队列中。</p>
-<p>这样的话你就只需要在滚动发生时创建你的views，避免了不划算的内存分配。</p>
-<p>创建views的能效问题也适用于你app的其它方面。想象一下一个用户点击一个按钮的时候需要呈现一个view的场景。有两种实现方法：</p>
-<ol>
-<li>创建并隐藏这个view当这个screen加载的时候，当需要时显示它；</li>
-<li>当需要时才创建并展示。 每个方案都有其优缺点。</li>
-</ol>
-<p>用第一种方案的话因为你需要一开始就创建一个view并保持它直到不再使用，这就会更加消耗内存。然而这也会使你的app操作更敏感因为当用户点击按钮的时候它只需要改变一下这个view的可见性。</p>
-<p>第二种方案则相反-消耗更少内存，但是会在点击按钮的时候比第一种稍显卡顿。</p>
-</li>
-<li><p>Cache, Cache, 还是Cache！（NSCache：系统回收内存的时候它会自动删掉它的内容） 你可以通过 NSURLConnection 获取一个URL request， AFNetworking也一样的。这样你就不必为采用这条tip而改变所有的networking代码了。 如果你需要缓存其它不是HTTP Request的东西，你可以用NSCache。</p>
-</li>
-<li><p>权衡渲染方法（CALayer， CoreGraphics，OpenGL，Metal：性能能&amp;bundle大小）</p>
-</li>
-<li><p>处理内存警告 在app delegate中使用<code>applicationDidReceiveMemoryWarning:</code> 的方法 在你的自定义UIViewController的子类(subclass)中覆盖<code>didReceiveMemoryWarning</code> 注册并接收 UIApplicationDidReceiveMemoryWarningNotification 的通知 一旦收到这类通知，你就需要释放任何不必要的内存使用。 UIViewController的默认行为是移除一些不可见的view， 它的一些子类则可以补充这个方法，删掉一些额外的数据结构。一个有图片缓存的app可以移除不在屏幕上显示的图片。</p>
-<p>这样对内存警报的处理是很必要的，若不重视，你的app就可能被系统杀掉。</p>
-<p>然而，当你一定要确认你所选择的object是可以被重现创建的来释放内存。一定要在开发中用模拟器中的内存提醒模拟去测试一下。</p>
-</li>
-<li><p>重用大开销的对象 还需要注意的是，其实设置一个NSDateFormatter的速度差不多是和创建新的一样慢的！所以如果你的app需要经常进行日期格式处理的话，你会从这个方法中得到不小的性能提升。</p>
-</li>
-<li>使用Sprite Sheets（渲染速度加快，甚至比标准的屏幕渲染方法节省内存。）</li>
-<li>避免反复处理数据（从特定key中取数据，那么就使用键值对的dictionary） 你需要数据来展示一个table view,最好直接从服务器取array结构的数据以避免额外的中间数据结构改变。</li>
-<li><p>选择正确的数据格式（JSON和XML） 解析JSON会比XML更快一些，JSON也通常更小更便于传输。从iOS5起有了官方内建的JSON deserialization 就更加方便使用了。</p>
-<p>但是XML也有XML的好处，比如使用SAX 来解析XML就像解析本地文件一样，你不需像解析json一样等到整个文档下载完成才开始解析。当你处理很大的数据的时候就会极大地减低内存消耗和增加性能</p>
-</li>
-<li><p>正确地设定Background Images（colorWithPatternImage，UIImageView） 如果你使用全画幅的背景图，你就必须使用UIImageView因为UIColor的colorWithPatternImage是用来创建小的重复的图片作为背景的。这种情形下使用UIImageView可以节约不少的内存：</p>
-<p>如果你用小图平铺来创建背景，你就需要用UIColor的colorWithPatternImage来做了，它会更快地渲染也不会花费很多内存：</p>
-</li>
-<li><p>减少使用Web特性（不像驱动Safari的那么快，尽可能移除不必要的javascript，避免使用过大的框架。能只用原生js就更好了） 另外，尽可能异步加载例如用户行为统计script这种不影响页面表达的javascript。</p>
-<p>最后，永远要注意你使用的图片，保证图片的符合你使用的大小。使用Sprite sheet提高加载速度和节约内存。</p>
-</li>
-<li><p>设定Shadow Path（QuartzCore：Core Animation不得不先在后台得出你的图形并加好阴影然后才渲染，这开销是很大的。） 使用shadow path的话iOS就不必每次都计算如何渲染，它使用一个预先计算好的路径。但问题是自己计算path的话可能在某些View中比较困难，且每当view的frame变化的时候你都需要去update shadow path.</p>
-</li>
-<li><p>优化你的Table View</p>
-<p>正确使用<code>reuseIdentifier</code>来重用cells 尽量使所有的view opaque，包括cell自身 避免渐变，图片缩放，后台选人 缓存行高 如果cell内现实的内容来自web，使用异步加载，缓存请求结果 使用<code>shadowPath</code>来画阴影 减少subviews的数量 尽量不适用<code>cellForRowAtIndexPath:</code>，如果你需要用到它，只用一次然后缓存结果 使用正确的数据结构来存储数据 使用<code>rowHeight</code>, <code>sectionFooterHeight</code> 和 <code>sectionHeaderHeight</code>来设定固定的高，不要请求delegate</p>
-</li>
-<li><p>选择正确的数据存储选项</p>
-<p>使用<code>NSUerDefaults</code> 使用XML, JSON, 或者 plist 使用NSCoding存档 使用类似SQLite的本地SQL数据库 使用 Core Data NSUserDefaults的问题是什么？虽然它很nice也很便捷，但是它只适用于小数据，比如一些简单的布尔型的设置选项，再大点你就要考虑其它方式了</p>
-<p>XML这种结构化档案呢？总体来说，你需要读取整个文件到内存里去解析，这样是很不经济的。使用SAX又是一个很麻烦的事情。</p>
-<p>NSCoding？不幸的是，它也需要读写文件，所以也有以上问题。</p>
-<p>在这种应用场景下，使用SQLite 或者 Core Data比较好。使用这些技术你用特定的查询语句就能只加载你需要的对象。</p>
-<p>在性能层面来讲，SQLite和Core Data是很相似的。他们的不同在于具体使用方法。Core Data代表一个对象的graph model，但SQLite就是一个DBMS。Apple在一般情况下建议使用Core Data，但是如果你有理由不使用它，那么就去使用更加底层的SQLite吧。</p>
-<p>如果你使用SQLite，你可以用FMDB(<a href="https://github.com/ccgus/fmdb" target="_blank" rel="external">https://github.com/ccgus/fmdb</a>)这个库来简化SQLite的操作，这样你就不用花很多经历了解SQLite的C API了。</p>
-</li>
-<li><p>加速启动时间 尽可能做更多的异步任务，比如加载远端或者数据库数据，解析数据。</p>
-</li>
-</ol>
-<p>还是那句话，避免过于庞大的XIB，因为他们是在主线程上加载的。所以尽量使用没有这个问题的Storyboards吧！</p>
-<p>注意，用Xcode debug时watchdog并不运行，一定要把设备从Xcode断开来测试启动速度</p>
-<ol>
-<li><p>使用Autorelease Pool</p>
-<p>你创建很多临时对象，你会发现内存一直在减少直到这些对象被release的时候。这是因为只有当UIKit用光了autorelease pool的时候memory才会被释放。</p>
-</li>
-<li><p>选择是否缓存图片（一个是用<code>imageNamed</code>：当加载时会缓存图片，用一个指定的名字在系统缓存中查找并返回一个图片对象如果它存在的话。如果缓存中没有找到相应的图片，这个方法从指定的文档中加载然后缓存并返回这个对象，二是用<code>imageWithContentsOfFile</code>，仅加载图片）</p>
-<p>如果你要加载一个大图片而且是一次性使用，那么就没必要缓存这个图片，用<code>imageWithContentsOfFile</code>足矣，这样不会浪费内存来缓存它。</p>
-<p>然而，在图片反复重用的情况下<code>imageNamed</code>是一个好得多的选择。</p>
-</li>
-<li><p>尽量避免日期格式转换（尽量选择Unix时间戳） 许多web API会以微秒的形式返回时间戳，因为这种格式在javascript中更方便使用。记住用<code>dateFromUnixTimestamp</code>之前除以1000就好了。</p>
-</li>
-</ol>
-<hr>
-<p>tableView优化总结：</p>
-<blockquote>
-<p>卡顿：重用是否成功（自己写）—是否是多次请求-青花瓷（每次滚动）—github，博客，微博–Instruments三件套(Time Profiler,Core Animation,GPU Driver)—GPU-CPU-代码逻辑-1.cell高度没有缓存。2. refreshData（reloadData）2次。 3.懒加载View 4.圆角问题 5.尺寸对应 6.NSDateFormatter 7.UIImage缓存取舍 8.手动 Drawing（Cell 中 view 的组织复杂）9. UI 线程的时间 10.缓存一切可以缓存的！就是“用空间替换时间”！</p>
-</blockquote>
-<ol>
-<li><p>最常用的就是cell的重用， 注册重用标识符</p>
-<p>如果不重用cell时，每当一个cell显示到屏幕上时，就会重新创建一个新的cell 如果有很多数据的时候，就会堆积很多cell。如果重用cell，为cell创建一个ID 每当需要显示cell 的时候，都会先去缓冲池中寻找可循环利用的cell，如果没有再重新创建cell 设置正确的reuseIdentifer以重用cell</p>
-</li>
-<li><p>避免cell的重新布局</p>
-<p>cell的布局填充等操作 比较耗时，一般创建时就布局好 如可以将cell单独放到一个自定义类，初始化时就布局好</p>
-</li>
-<li><p>提前计算并缓存cell的属性及内容</p>
-<p>在cellForRowAtIndexPath:中尽量做更少的操作。如果需要做一些处理，那么最好做过一次之后，就将结果缓存起来。 当我们创建cell的数据源方法时，编译器并不是先创建cell 再定cell的高度 而是先根据内容一次确定每一个cell的高度，高度确定后，再创建要显示的cell，滚动时，每当cell进入凭虚都会计算高度，提前估算高度告诉编译器，编译器知道高度后，紧接着就会创建cell，这时再调用高度的具体计算方法，这样可以方式浪费时间去计算显示以外的cell</p>
-</li>
-<li><p>减少cell中控件的数量</p>
-<p>尽量使cell得布局大致相同，不同风格的cell可以使用不用的重用标识符，初始化时添加控件， 不适用的可以先隐藏</p>
-</li>
-<li><p>不要使用ClearColor，无背景色，透明度也不要设置为0</p>
-<p>渲染耗时比较长 尽量将view设置为不透明，包括cell本身。</p>
-</li>
-<li><p>使用局部更新</p>
-<p>如果只是更新某组的话，使用reloadSection进行局部更新</p>
-</li>
-<li><p>加载网络数据，下载图片，使用异步加载，并缓存</p>
-<p>如果cell显示的内容来此网络，那么确保这些内容是通过异步来获取的</p>
-</li>
-<li><p>少使用addView 给cell动态添加view</p>
-</li>
-<li><p>按需加载cell，cell滚动很快时，只加载范围内的cell</p>
-<p>注意正确使用懒加载</p>
-</li>
-<li><p>不要实现无用的代理方法，tableView只遵守两个协议</p>
-<p>非必要的代理或者数据源方法可以省略，比如numberofsention</p>
-</li>
-<li><p>缓存行高：</p>
-<p>如果row的高度不相同，那么将其缓存下来 estimatedHeightForRow不能和HeightForRow里面的layoutIfNeed同时存在，这两者同时存在才会出现“窜动”的bug。所以我的建议是：只要是固定行高就写预估行高来减少行高调用次数提升性能。如果是动态行高就不要写预估方法了，用一个行高的缓存字典来减少代码的调用次数即可</p>
-</li>
-<li><p>避免渐变，图像缩放以及离屏绘制</p>
-</li>
-<li><p>使用shadowPath来设置阴影。</p>
-</li>
-<li><p>使用适当的数据结构来保存需要的信息。不同的结构会带来不同的操作代价。</p>
-</li>
-<li><p>使用rowHeight, sectionFooterHeight 和 sectionHeaderHeight 来设置一个恒定 高度，而不要从delegate中获取。</p>
-</li>
-<li><p>使用富文本标签代价是很昂贵的</p>
-</li>
-</ol>
-<p>费尽周折用富文本标签，代价太昂贵了。尽可能地避免使用这个。问问你自己是否真的需要这个。如果是的话，尽可能的做缓存。</p>
-<p>提前计算并缓存好高度（布局），因为heightForRowAtIndexPath:是调用最频繁的方法； 异步绘制，遇到复杂界面，遇到性能瓶颈时，可能就是突破口； 滑动时按需加载，这个在大量图片展示，网络加载的时候很管用！（SDWebImage已经实现异步加载，配合这条性能杠杠的）。 除了上面最主要的三个方面外，还有很多几乎大伙都很熟知的优化点：</p>
-<ul>
-<li>正确使用reuseIdentifier来重用Cells</li>
-<li>尽量使所有的view opaque，包括Cell自身</li>
-<li>尽量少用或不用透明图层</li>
-<li>如果Cell内现实的内容来自web，使用异步加载，缓存请求结果</li>
-<li>减少subviews的数量</li>
-<li>在heightForRowAtIndexPath:中尽量不使用cellForRowAtIndexPath:，如果你需要用到它，只用一次然后缓存结果</li>
-<li>尽量少用addView给Cell动态添加View，可以初始化时就添加，然后通过hide来控制是否显示</li>
-<li>尽量设置Cell的view为opaque，避免GPU对Cell下面的内容也进行绘制。</li>
-<li>避免大量的图片缩放、颜色渐变等。</li>
-<li>避免同步的从网络、文件获取数据（这个是必须的=。=）</li>
-<li>用shadowPath创建阴影。</li>
-<li>尽量减少subview的数量，如多用drawRect绘制元素，替代用view显示。</li>
-<li>尽量显示“大小刚好合适”的图片资源。</li>
-</ul>
-<p>总的来说，就是：</p>
-<ul>
-<li>缓存一切可以缓存的！就是“用空间替换时间”！</li>
-</ul>
-<p>在UITableView的Delegate、DataSource方法中，减少任何不必要的操作</p>
+          <!--
+## 目录
 
-          
+*   ##### 什么是block？
+
+    *   block编译转换结构
+    *   block实际结构
+
+*   ##### block的类型
+
+    *   NSConcreteGlobalBlock和NSConcreteStackBlock
+    *   NSConcreteMallocBlock
+
+*   ##### 捕捉变量对block结构的影响
+
+    *   局部变量
+    *   全局变量
+    *   局部静态变量
+    *   __block修饰的变量
+    *   self隐式循环引用
+
+*   ##### 不同类型block的复制
+
+    *   栈block
+    *   堆block
+    *   全局block
+
+*   ##### block辅助函数
+
+    *   __block修饰的基本类型的辅助函数
+    *   对象的辅助函数
+
+*   ##### ARC中block的工作
+
+    *   block试验
+    *   block作为参数传递
+    *   block作为返回值
+    *   block属性
+
+### 参考博文-->
+<p>关于block网上也是一大把的文章，但总觉得有的说的太深有的说的太浅。最近看了一些block的资料，并动手做了一些实践，摘录并添加了一些结论。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/06/15/block深究/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -757,7 +1094,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
