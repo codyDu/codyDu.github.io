@@ -88,19 +88,21 @@
 
 
 <meta name="description" content="快速搞定自定义滤镜GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即">
+<meta name="keywords" content="GPUImage">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GPUImage（三）快速搞定自定义滤镜">
 <meta property="og:url" content="http://dupengfei.com/2015/10/18/GPUimage(三)快速搞定自定义滤镜/index.html">
 <meta property="og:site_name" content="杜鹏飞的博客">
 <meta property="og:description" content="快速搞定自定义滤镜GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即">
-<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/jizhun">
-<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/tiaozheng">
-<meta property="og:image" content="http://ofo2isr3w.bkt.clouddn.com/final">
-<meta property="og:updated_time" content="2016-11-01T07:20:33.000Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dupengfei.com/images/jizhun.png">
+<meta property="og:image" content="http://dupengfei.com/images/tiaozheng.png">
+<meta property="og:image" content="http://dupengfei.com/images/final.png">
+<meta property="og:updated_time" content="2020-12-31T10:11:57.912Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GPUImage（三）快速搞定自定义滤镜">
 <meta name="twitter:description" content="快速搞定自定义滤镜GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即">
-<meta name="twitter:image" content="http://ofo2isr3w.bkt.clouddn.com/jizhun">
+<meta name="twitter:image" content="http://dupengfei.com/images/jizhun.png">
 
 
 
@@ -388,11 +390,11 @@
 
       
         <h2 id="快速搞定自定义滤镜"><a href="#快速搞定自定义滤镜" class="headerlink" title="快速搞定自定义滤镜"></a>快速搞定自定义滤镜</h2><p>GPUImage中提供了GPUImageLookupFilter这样一个滤镜。可以大大的减少滤镜的开发时间。<br>GPUImageLookupFilter通过一个颜色映射表来实现颜色转换。这种查表法的原理就是在一张表中为每种颜色纪录一个对应的映射目标的颜色。当用查表法对一张照片做颜色映射时，只需要遍历照片的每个像素点，然后在表中找到该像素颜色对应的目标颜色，最后将该像素设置为目标颜色即可。查表法实现的前提是颜色的映射与周围的颜色无关，即一种颜色无论周围的颜色为何、无论其位于照片的哪个位置，其目标颜色都应该是相同的。</p>
-<p>RGB的颜色数量表示为255<em>255</em>2555 = 16777216如果要记录每种颜色的映射结果，那么需要一千六百多万条记录，这显然无法应用到实际的工程中。为了简化起见，一般每相近的 4 种颜色采用一条记录存储，这样颜色表只需要 64<em>64</em>64 = 262144 条记录。<br>下面是一张标准的基准颜色表<br><img src="http://ofo2isr3w.bkt.clouddn.com/jizhun" alt=""><br>设计师或产品经理在PS中调整好的效果可能是这样的一组Action<br><img src="http://ofo2isr3w.bkt.clouddn.com/tiaozheng" alt="">  </p>
-<p>将这些调整应用到基准颜色表上就得到了一张映射表<br><img src="http://ofo2isr3w.bkt.clouddn.com/final" alt=""><br>上表将 262144 种颜色分为 8 个块，每块64*64格，每一格的颜色都不同。进行颜色映射时，首先使用数字图像处理软件对该基准颜色表应用要模拟的滤镜来生成映射表（如下图），然后对要处理的照片的每个像素，从基准颜色表中找到该像素颜色的位置，然后在映射表的相应位置就可以得到目的颜色。</p>
+<p>RGB的颜色数量表示为255<em>255</em>2555 = 16777216如果要记录每种颜色的映射结果，那么需要一千六百多万条记录，这显然无法应用到实际的工程中。为了简化起见，一般每相近的 4 种颜色采用一条记录存储，这样颜色表只需要 64<em>64</em>64 = 262144 条记录。<br>下面是一张标准的基准颜色表<br><img src="/images/jizhun.png" alt=""><br>设计师或产品经理在PS中调整好的效果可能是这样的一组Action<br><img src="/images/tiaozheng.png" alt="">  </p>
+<p>将这些调整应用到基准颜色表上就得到了一张映射表<br><img src="/images/final.png" alt=""><br>上表将 262144 种颜色分为 8 个块，每块64*64格，每一格的颜色都不同。进行颜色映射时，首先使用数字图像处理软件对该基准颜色表应用要模拟的滤镜来生成映射表（如下图），然后对要处理的照片的每个像素，从基准颜色表中找到该像素颜色的位置，然后在映射表的相应位置就可以得到目的颜色。</p>
 <p>暗角可以使用遮罩的方式（也就是使用png图片）也可以使用这个滤镜GPUImageVignetteFilter</p>
 <p>下面是demo code</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"> -(UIImage *)p_ImageFilterWithFilterName:(NSString *)filterName originImage:(UIImage *)originImage&#123;</div><div class="line"> 2 </div><div class="line"> 3  GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:originImage];</div><div class="line"> 4  GPUImagePicture *lookupImageSource = [[GPUImagePicture alloc] initWithImage:[UIImage imageNamed:filterName]];</div><div class="line"> 5  GPUImageLookupFilter *lookupFilter = [[GPUImageLookupFilter alloc] init];</div><div class="line"> 6  </div><div class="line"> 7  [stillImageSource addTarget:lookupFilter];</div><div class="line"> 8  [lookupImageSource addTarget:lookupFilter];</div><div class="line"> 9  if (self.hasVignetteEffect) &#123;</div><div class="line">10      [lookupFilter useNextFrameForImageCapture];</div><div class="line">11      GPUImageVignetteFilter *vignettefilter = [[GPUImageVignetteFilter alloc] init];</div><div class="line">12      vignettefilter.vignetteEnd = kAlohaImageVignetteEnd;</div><div class="line">13      vignettefilter.vignetteStart = kAlohaImageVignetteStart;</div><div class="line">14      </div><div class="line">15      [lookupFilter addTarget:vignettefilter];</div><div class="line">16      [stillImageSource processImage];</div><div class="line">17      [lookupImageSource processImage];</div><div class="line">18      [vignettefilter useNextFrameForImageCapture];</div><div class="line">19      UIImage *filteredimage = [vignettefilter imageFromCurrentFramebuffer];</div><div class="line">20      return filteredimage;</div><div class="line">21  &#125; else &#123;</div><div class="line">22      [stillImageSource processImage];</div><div class="line">23      [lookupImageSource processImage];</div><div class="line">24      [lookupFilter useNextFrameForImageCapture];</div><div class="line">25      UIImage *filteredimage = [lookupFilter imageFromCurrentFramebuffer];</div><div class="line">26      return filteredimage;</div><div class="line">27  &#125;</div><div class="line">28 &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"> -(UIImage *)p_ImageFilterWithFilterName:(NSString *)filterName originImage:(UIImage *)originImage&#123;</span><br><span class="line"> 2 </span><br><span class="line"> 3  GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:originImage];</span><br><span class="line"> 4  GPUImagePicture *lookupImageSource = [[GPUImagePicture alloc] initWithImage:[UIImage imageNamed:filterName]];</span><br><span class="line"> 5  GPUImageLookupFilter *lookupFilter = [[GPUImageLookupFilter alloc] init];</span><br><span class="line"> 6  </span><br><span class="line"> 7  [stillImageSource addTarget:lookupFilter];</span><br><span class="line"> 8  [lookupImageSource addTarget:lookupFilter];</span><br><span class="line"> 9  if (self.hasVignetteEffect) &#123;</span><br><span class="line">10      [lookupFilter useNextFrameForImageCapture];</span><br><span class="line">11      GPUImageVignetteFilter *vignettefilter = [[GPUImageVignetteFilter alloc] init];</span><br><span class="line">12      vignettefilter.vignetteEnd = kAlohaImageVignetteEnd;</span><br><span class="line">13      vignettefilter.vignetteStart = kAlohaImageVignetteStart;</span><br><span class="line">14      </span><br><span class="line">15      [lookupFilter addTarget:vignettefilter];</span><br><span class="line">16      [stillImageSource processImage];</span><br><span class="line">17      [lookupImageSource processImage];</span><br><span class="line">18      [vignettefilter useNextFrameForImageCapture];</span><br><span class="line">19      UIImage *filteredimage = [vignettefilter imageFromCurrentFramebuffer];</span><br><span class="line">20      return filteredimage;</span><br><span class="line">21  &#125; else &#123;</span><br><span class="line">22      [stillImageSource processImage];</span><br><span class="line">23      [lookupImageSource processImage];</span><br><span class="line">24      [lookupFilter useNextFrameForImageCapture];</span><br><span class="line">25      UIImage *filteredimage = [lookupFilter imageFromCurrentFramebuffer];</span><br><span class="line">26      return filteredimage;</span><br><span class="line">27  &#125;</span><br><span class="line">28 &#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -517,7 +519,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -526,7 +528,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -535,7 +537,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -613,7 +615,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

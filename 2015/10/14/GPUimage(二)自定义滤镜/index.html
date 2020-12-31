@@ -87,22 +87,18 @@
 
 
 
-<meta name="description" content="自定义滤镜GPUImage 自定义滤镜需要使用 OpenGL 着色语言( GLSL )编写 Fragment Shader（片段着色器），除此之外你可能还需要一点点图像处理相关的知识。下面我将尝试通过 GPUImage 中的 GPUImageColorInvertFilter(反色滤镜)来讲解一下它的运作过程。
-先看.h 文件:   
-123456#import “GPUImageFilter.h">
+<meta name="description" content="自定义滤镜GPUImage 自定义滤镜需要使用 OpenGL 着色语言( GLSL )编写 Fragment Shader（片段着色器），除此之外你可能还需要一点点图像处理相关的知识。下面我将尝试通过 GPUImage 中的 GPUImageColorInvertFilter(反色滤镜)来讲解一下它的运作过程。 先看.h 文件:    123456#import “GPUImageFilter.h">
+<meta name="keywords" content="GPUImage">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GPUImage（二）自定义滤镜">
 <meta property="og:url" content="http://dupengfei.com/2015/10/14/GPUimage(二)自定义滤镜/index.html">
 <meta property="og:site_name" content="杜鹏飞的博客">
-<meta property="og:description" content="自定义滤镜GPUImage 自定义滤镜需要使用 OpenGL 着色语言( GLSL )编写 Fragment Shader（片段着色器），除此之外你可能还需要一点点图像处理相关的知识。下面我将尝试通过 GPUImage 中的 GPUImageColorInvertFilter(反色滤镜)来讲解一下它的运作过程。
-先看.h 文件:   
-123456#import “GPUImageFilter.h">
-<meta property="og:updated_time" content="2016-11-01T07:35:32.000Z">
+<meta property="og:description" content="自定义滤镜GPUImage 自定义滤镜需要使用 OpenGL 着色语言( GLSL )编写 Fragment Shader（片段着色器），除此之外你可能还需要一点点图像处理相关的知识。下面我将尝试通过 GPUImage 中的 GPUImageColorInvertFilter(反色滤镜)来讲解一下它的运作过程。 先看.h 文件:    123456#import “GPUImageFilter.h">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-31T10:11:57.912Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GPUImage（二）自定义滤镜">
-<meta name="twitter:description" content="自定义滤镜GPUImage 自定义滤镜需要使用 OpenGL 着色语言( GLSL )编写 Fragment Shader（片段着色器），除此之外你可能还需要一点点图像处理相关的知识。下面我将尝试通过 GPUImage 中的 GPUImageColorInvertFilter(反色滤镜)来讲解一下它的运作过程。
-先看.h 文件:   
-123456#import “GPUImageFilter.h">
+<meta name="twitter:description" content="自定义滤镜GPUImage 自定义滤镜需要使用 OpenGL 着色语言( GLSL )编写 Fragment Shader（片段着色器），除此之外你可能还需要一点点图像处理相关的知识。下面我将尝试通过 GPUImage 中的 GPUImageColorInvertFilter(反色滤镜)来讲解一下它的运作过程。 先看.h 文件:    123456#import “GPUImageFilter.h">
 
 
 
@@ -391,9 +387,9 @@
       
         <h2 id="自定义滤镜"><a href="#自定义滤镜" class="headerlink" title="自定义滤镜"></a>自定义滤镜</h2><p>GPUImage 自定义滤镜需要使用 OpenGL 着色语言( GLSL )编写 Fragment Shader（片段着色器），除此之外你可能还需要一点点图像处理相关的知识。下面我将尝试通过 GPUImage 中的 GPUImageColorInvertFilter(反色滤镜)来讲解一下它的运作过程。</p>
 <p>先看.h 文件:   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#import “GPUImageFilter.h&quot;</div><div class="line"></div><div class="line">@interface GPUImageColorInvertFilter : GPUImageFilter</div><div class="line">&#123;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#import “GPUImageFilter.h&quot;</span><br><span class="line"></span><br><span class="line">@interface GPUImageColorInvertFilter : GPUImageFilter</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
 <p>很简单，可以看出 GPUImageColorInvertFilter 是继承了 GPUImageFilter<br>然后看 .m 文件 中 @implementation 之前的一段代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">NSString *const kGPUImageInvertFragmentShaderString = SHADER_STRING</div><div class="line">(</div><div class="line"> varying highp vec2 textureCoordinate;</div><div class="line"></div><div class="line"> uniform sampler2D inputImageTexture;</div><div class="line"></div><div class="line"> void main()</div><div class="line"> &#123;</div><div class="line">    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);</div><div class="line"></div><div class="line">    gl_FragColor = vec4((1.0 - textureColor.rgb), textureColor.a);</div><div class="line"> &#125;</div><div class="line">);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">NSString *const kGPUImageInvertFragmentShaderString = SHADER_STRING</span><br><span class="line">(</span><br><span class="line"> varying highp vec2 textureCoordinate;</span><br><span class="line"></span><br><span class="line"> uniform sampler2D inputImageTexture;</span><br><span class="line"></span><br><span class="line"> void main()</span><br><span class="line"> &#123;</span><br><span class="line">    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);</span><br><span class="line"></span><br><span class="line">    gl_FragColor = vec4((1.0 - textureColor.rgb), textureColor.a);</span><br><span class="line"> &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 <p>第 1 行，可以看到 SHADER_STRING 宏中包含着我们的 Shader (着色器)代码，我们的着色器字符串赋给一个 const NSString 对象（这个常量将在 GPUImageFilter 及其子类的初始化过程中用来设置 filter）。</p>
 <p>第 2、3 行声明了两个变量。</p>
 <p><strong>varying</strong> 变量是<strong>Vertex</strong> 和 <strong>Fragment Shader</strong>（顶点着色器和片段着色器）之间做数据传递用的，一般 Vertex Shader（顶点着色器） 修改 varying 变量的值，然后 Fragment Shader（片段着色器）使用该varying变量的值。因此varying 变量在 Vertex 和 Fragment Shader 中声明必须一致。放到这里，也就是说 textureCoordinate 必须叫这个名字不能改。  </p>
@@ -406,12 +402,12 @@
 <p>第 6 行，(1.0 - textureColor.rgb) 去 textureColor也就是原图的 RGB 值，做了一个向量的减法，这是图像的反色算法，然后把经过反色的 RGB 值和原图的 Alpha 值组成一个新的 vec4（四维向量）值赋给 gl_FragColor。 gl_FragColor 是 Fragment Shader 预先定义的变量，赋给它的值就是该片段最终的颜色值。</p>
 <p>Shader 到这里已经解释完了，我来说一下我对这部分功能的理解，方便你理解：GPUImage 中应该有一个 Vertex Shader，它对图像逐个像素扫描，通过 textureCoordinate 变量将当前的扫描坐标传递给我们的 Fragment Shader，inputImageTexture 包含我们要处理的图像的全部信息，在 Shader 程序内部通过 texture2D 得到 inputImageTexture 在当前位置 textureCoordinate 的 RGBA 值，运用图像处理知识，算出想要的新的 RGBA 值，把结果值赋给 gl_FragColor就算完成了。</p>
 <p>现在我们继续看代码，在 Shader 之后是 GPUImageColorInvertFilter 的实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">@implementation GPUImageColorInvertFilter</div><div class="line"></div><div class="line">- (id)init;</div><div class="line">&#123;</div><div class="line">    if (!(self = [super initWithFragmentShaderFromString:kGPUImageInvertFragmentShaderString]))</div><div class="line">    &#123;</div><div class="line">        return nil;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return self;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@implementation GPUImageColorInvertFilter</span><br><span class="line"></span><br><span class="line">- (id)init;</span><br><span class="line">&#123;</span><br><span class="line">    if (!(self = [super initWithFragmentShaderFromString:kGPUImageInvertFragmentShaderString]))</span><br><span class="line">    &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
 <p>很简单，就是使用刚才的着色器代码来设置 filter。这样一个新的滤镜就诞生了～</p>
 <p>也可以从bundle里面加载OpenGL Shading Language编写的 fragment shader文件, 后缀是 .fsh  或者从字符串里面加载.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1. GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@&quot;CustomShader&quot;];</div><div class="line"></div><div class="line">1. NSString *const kfilterShader = SHADER_STRING</div><div class="line">2. (</div><div class="line">3. ...</div><div class="line">4. );</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@&quot;CustomShader&quot;];</span><br><span class="line"></span><br><span class="line">1. NSString *const kfilterShader = SHADER_STRING</span><br><span class="line">2. (</span><br><span class="line">3. ...</span><br><span class="line">4. );</span><br></pre></td></tr></table></figure>
 <p>一个例子:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">1. varying highp vec2 textureCoordinate;</div><div class="line">2. uniform sampler2D inputImageTexture;</div><div class="line">3. void main()</div><div class="line">4. &#123;</div><div class="line">5.     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);</div><div class="line">6.     lowp vec4 outputColor;</div><div class="line">7.     outputColor.r = (textureColor.r * 0.393) + (textureColor.g * 0.769) + (textureColor.b * 0.189);</div><div class="line">8.     outputColor.g = (textureColor.r * 0.349) + (textureColor.g * 0.686) + (textureColor.b * 0.168);    </div><div class="line">9.     outputColor.b = (textureColor.r * 0.272) + (textureColor.g * 0.534) + (textureColor.b * 0.131);</div><div class="line">10.     outputColor.a = 1.0;</div><div class="line">11.     gl_FragColor = outputColor;</div><div class="line">12. &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1. varying highp vec2 textureCoordinate;</span><br><span class="line">2. uniform sampler2D inputImageTexture;</span><br><span class="line">3. void main()</span><br><span class="line">4. &#123;</span><br><span class="line">5.     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);</span><br><span class="line">6.     lowp vec4 outputColor;</span><br><span class="line">7.     outputColor.r = (textureColor.r * 0.393) + (textureColor.g * 0.769) + (textureColor.b * 0.189);</span><br><span class="line">8.     outputColor.g = (textureColor.r * 0.349) + (textureColor.g * 0.686) + (textureColor.b * 0.168);    </span><br><span class="line">9.     outputColor.b = (textureColor.r * 0.272) + (textureColor.g * 0.534) + (textureColor.b * 0.131);</span><br><span class="line">10.     outputColor.a = 1.0;</span><br><span class="line">11.     gl_FragColor = outputColor;</span><br><span class="line">12. &#125;</span><br></pre></td></tr></table></figure>
 <p>这段脚本有一个varing, 表示的是材质的2D坐标, 一个unifrom是材质的图片.<br>main函数里面把这个坐标的颜色取出来处理后生成新的颜色, 交给gl_FragColor传递个pipeline的下一个单元. 在这里也就是最终输出.</p>
 <p>但是自己没有openGL基础，如果想要开发滤镜也会非常困难。下一篇就讲一下如何快速开发滤镜。</p>
 
@@ -538,7 +534,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -547,7 +543,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -556,7 +552,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -634,7 +630,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

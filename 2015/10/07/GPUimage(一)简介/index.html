@@ -88,12 +88,14 @@
 
 
 <meta name="description" content="GPUImage简介GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像，但我觉得 CoreImage 还是慢)。除了速度上的优势，GPUImage 还提供了很多很棒的图像">
+<meta name="keywords" content="GPUImage">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GPUImage（一）简介">
 <meta property="og:url" content="http://dupengfei.com/2015/10/07/GPUimage(一)简介/index.html">
 <meta property="og:site_name" content="杜鹏飞的博客">
 <meta property="og:description" content="GPUImage简介GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像，但我觉得 CoreImage 还是慢)。除了速度上的优势，GPUImage 还提供了很多很棒的图像">
-<meta property="og:updated_time" content="2016-11-01T07:21:32.000Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-31T10:11:57.912Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GPUImage（一）简介">
 <meta name="twitter:description" content="GPUImage简介GPUImage 是一个基于 GPU 图像和视频处理的开源 iOS 框架。由于使用 GPU 来处理图像和视频，所以速度非常快，它的作者 BradLarson 称在 iPhone4 上其处理速度是使用 CPU 来处理的 100 倍 (CoreImage 也能使用 GPU 来处理图像，但我觉得 CoreImage 还是慢)。除了速度上的优势，GPUImage 还提供了很多很棒的图像">
@@ -392,7 +394,7 @@
 <li>头文件搜索路径: project’s build settings, 把GPUImage的source和source下的iOS目录加到搜索路径里, 使用相对路径和递归.</li>
 <li>包含下面这个头文件:</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#import &quot;GPUImage.h&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;GPUImage.h&quot;</span><br></pre></td></tr></table></figure>
 <h2 id="GPUImage的简单使用"><a href="#GPUImage的简单使用" class="headerlink" title="GPUImage的简单使用"></a>GPUImage的简单使用</h2><h3 id="GPUImage中的有几个概念"><a href="#GPUImage中的有几个概念" class="headerlink" title="GPUImage中的有几个概念"></a>GPUImage中的有几个概念</h3><p>⁃ output，输出源</p>
 <p>⁃ intput，输入源</p>
 <p>⁃ filter，滤镜</p>
@@ -402,11 +404,11 @@
 <ol>
 <li>GPUImageVideoCamera -&gt; GPUImageSepiaFilter -&gt; GPUImageView<h3 id="处理流程"><a href="#处理流程" class="headerlink" title="处理流程"></a>处理流程</h3>在使用GPUImage之前先做些准备工作。OpenGL ES程序来处理图片，会有以下几个步骤：<br>1、初始化OpenGL ES环境，编译、链接顶点着色器和片元着色器；<br>2、缓存顶点、纹理坐标数据，传送图像数据到GPU；<br>3、绘制图元到特定的帧缓存；<br>4、在帧缓存取出绘制的图像。<br>GPUImage里面有两个非常重要的类：<br><strong>1 GPUImageFilter</strong>负责的是第一、二、三步。<br><strong>2 GPUImageFramebuffer</strong>负责是第四步。</li>
 </ol>
-<h3 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h3><p>将GPUImageView设置为self.view，根据face.png，设置GPUImagePicture，然后添加GPUImageTiltShiftFilter到响应链，再把GPUImageView作为响应链的终点，最后调用processImage，开始处理图像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">GPUImageView *primaryView = [[GPUImageView alloc] initWithFrame:self.view.frame];</div><div class="line">    self.view = primaryView;</div><div class="line">    UIImage *inputImage = [UIImage imageNamed:@&quot;face.png&quot;];</div><div class="line">    _sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage];</div><div class="line">    _sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];</div><div class="line">    _sepiaFilter.blurRadiusInPixels = 40.0;</div><div class="line">    [_sepiaFilter forceProcessingAtSize:primaryView.sizeInPixels];</div><div class="line">    [_sourcePicture addTarget:_sepiaFilter];</div><div class="line">    [_sepiaFilter addTarget:primaryView];</div><div class="line">    [_sourcePicture processImage];</div></pre></td></tr></table></figure></p>
+<h3 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h3><p>将GPUImageView设置为self.view，根据face.png，设置GPUImagePicture，然后添加GPUImageTiltShiftFilter到响应链，再把GPUImageView作为响应链的终点，最后调用processImage，开始处理图像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">GPUImageView *primaryView = [[GPUImageView alloc] initWithFrame:self.view.frame];</span><br><span class="line">    self.view = primaryView;</span><br><span class="line">    UIImage *inputImage = [UIImage imageNamed:@&quot;face.png&quot;];</span><br><span class="line">    _sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage];</span><br><span class="line">    _sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];</span><br><span class="line">    _sepiaFilter.blurRadiusInPixels = 40.0;</span><br><span class="line">    [_sepiaFilter forceProcessingAtSize:primaryView.sizeInPixels];</span><br><span class="line">    [_sourcePicture addTarget:_sepiaFilter];</span><br><span class="line">    [_sepiaFilter addTarget:primaryView];</span><br><span class="line">    [_sourcePicture processImage];</span><br></pre></td></tr></table></figure></p>
 <p>使用GPUImage自带的滤镜是远远不能满足需求的，下一篇就要看一下自定义滤镜。</p>
 <h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>项目里，发现滤镜模块调用完了以后，内存上去了下不来，反复检查，所有GPUImage相关元素都已经释放了。后来想到了显存，arc环境下，只负责回收oc对象的内存，显存自然需要GPUImage使用者自己来回收，这样也就容易了，翻GPUImage的api，知道</p>
 <p>GPUImageContext中有个framebufferCache：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[[GPUImageContextsharedImageProcessingContext].framebufferCachepurgeAllUnassignedFramebuffers]</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[GPUImageContextsharedImageProcessingContext].framebufferCachepurgeAllUnassignedFramebuffers]</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -531,7 +533,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -540,7 +542,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -549,7 +551,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -627,7 +629,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

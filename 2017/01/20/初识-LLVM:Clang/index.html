@@ -1,0 +1,869 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="介绍iOS 开发中 Objective-C 和 Swift 都用的是 Clang / LLVM 来编译的。LLVM是一个模块化和可重用的编译器和工具链技术的集合，Clang 是 LLVM 的子项目，是 C，C++ 和 Objective-C 编译器，目的是提供惊人的快速编译，比 GCC 快3倍，其中的 clang static analyzer 主要是进行语法分析，语义分析和生成中间代码，当然这个">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识-LLVM&#x2F;Clang">
+<meta property="og:url" content="http://dupengfei.com/2017/01/20/初识-LLVM:Clang/index.html">
+<meta property="og:site_name" content="杜鹏飞的博客">
+<meta property="og:description" content="介绍iOS 开发中 Objective-C 和 Swift 都用的是 Clang / LLVM 来编译的。LLVM是一个模块化和可重用的编译器和工具链技术的集合，Clang 是 LLVM 的子项目，是 C，C++ 和 Objective-C 编译器，目的是提供惊人的快速编译，比 GCC 快3倍，其中的 clang static analyzer 主要是进行语法分析，语义分析和生成中间代码，当然这个">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dupengfei.com/images/clang0001.png">
+<meta property="og:image" content="http://dupengfei.com/images/clang0002.png">
+<meta property="og:updated_time" content="2020-12-31T10:11:57.912Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初识-LLVM&#x2F;Clang">
+<meta name="twitter:description" content="介绍iOS 开发中 Objective-C 和 Swift 都用的是 Clang / LLVM 来编译的。LLVM是一个模块化和可重用的编译器和工具链技术的集合，Clang 是 LLVM 的子项目，是 C，C++ 和 Objective-C 编译器，目的是提供惊人的快速编译，比 GCC 快3倍，其中的 clang static analyzer 主要是进行语法分析，语义分析和生成中间代码，当然这个">
+<meta name="twitter:image" content="http://dupengfei.com/images/clang0001.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dupengfei.com/2017/01/20/初识-LLVM:Clang/"/>
+
+
+
+
+
+  <title> 初识-LLVM/Clang | 杜鹏飞的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b627bfa0d9d39ca04a7102b636415274";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">杜鹏飞的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录一些，分享一些，欢迎交流</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2017/01/20/初识-LLVM:Clang/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                初识-LLVM/Clang
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-20T00:11:20+08:00">
+                2017-01-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/20/初识-LLVM:Clang/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/20/初识-LLVM:Clang/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>iOS 开发中 Objective-C 和 Swift 都用的是 Clang / LLVM 来编译的。LLVM是一个模块化和可重用的编译器和工具链技术的集合，Clang 是 LLVM 的子项目，是 C，C++ 和 Objective-C 编译器，目的是提供惊人的快速编译，比 GCC 快3倍，其中的 clang static analyzer 主要是进行语法分析，语义分析和生成中间代码，当然这个过程会对代码进行检查，出错的和需要警告的会标注出来。LLVM 核心库提供一个优化器，对流行的 CPU 做代码生成支持。lld 是 Clang / LLVM 的内置链接器，clang 必须调用链接器来产生可执行文件。</p>
+<p>​<br>LLVM 比较有特色的一点是它能提供一种代码编写良好的中间表示 IR，这意味着它可以作为多种语言的后端，这样就能够提供语言无关的优化同时还能够方便的针对多种 CPU 的代码生成。<br>​    </p>
+<h3 id="总结一句"><a href="#总结一句" class="headerlink" title="总结一句"></a>总结一句</h3><p>LLVM是编译器和工具链技的集合，Clang才是真正的编译器，Clang必须调用链接器(内置lldb)来产生可执行文件。</p>
+<p>摘自<a href="https://linuxtoy.org/archives/llvm-and-clang.html" target="_blank" rel="noopener">https://linuxtoy.org/archives/llvm-and-clang.html</a></p>
+<p>LLVM（Low Level Virtual Machine）：编译器的后台——进行程序语言的编译期优化、链接优化、在线编译优化、代码生成（优化以任意程序语言编写的程序的编译时间(compile-time)、链接时间(link-time)、运行时间(run-time)以及空闲时间(idle-time)）</p>
+<p>Clang:：编译器（LLVM）的前端— 是一个 C++ 编写、基于 LLVM、发布于 LLVM BSD 许可证下的 C/C++/Objective C/Objective C++ 编译器，其目标（之一）就是超越 GCC</p>
+<h6 id="LLVM其他用途"><a href="#LLVM其他用途" class="headerlink" title="LLVM其他用途"></a>LLVM其他用途</h6><p>LLVM 还被用在 Gallium3D 中进行 JIT 优化，Xorg 中的 pixman 也有考虑使用 LLVM 来优化执行速度，llvm-lua 使用 LLVM 来编译 Lua 代码，gpuocelot 使用 LLVM 可以令 CUDA 程序无需重新编译即可运行在多核 X86CPU、IBM Cell、支持 OpenCL 的设备之上… </p>
+<p>LLVM，做语法树分析，实现语言转换、字符串加密。编写ClangPlugin，扩展功能。编写Pass，代码混淆优化。</p>
+<h3 id="区别于优势："><a href="#区别于优势：" class="headerlink" title="区别于优势："></a>区别于优势：</h3><h6 id="总结：Clang-具有如下优点："><a href="#总结：Clang-具有如下优点：" class="headerlink" title="总结：Clang 具有如下优点："></a>总结：Clang 具有如下优点：</h6><ul>
+<li>编译速度快：在某些平台上，Clang 的编译速度显著的快过 GCC。</li>
+<li>占用内存小：Clang 生成的 AST 所占用的内存是 GCC 的五分之一左右。</li>
+<li>模块化设计：Clang 采用基于库的模 块化设计，易于 IDE 集成及其他用途的重用。</li>
+<li>诊断信息可读性强：在编译过程中，Clang 创建并保留了大量详细的元数据 (metadata)，有利于调试和错误报告。</li>
+</ul>
+<h6 id="Clang缺陷："><a href="#Clang缺陷：" class="headerlink" title="Clang缺陷："></a>Clang缺陷：</h6><ul>
+<li>支持更多语言：GCC 除了支持 C/C++/Objective-C, 还支持 Fortran/Pascal/Java/Ada/Go 和其他语言。Clang 目前支持的语言有 C/C++/Objective-C/Objective-C++。</li>
+<li>加强对 C++ 的支持：Clang 对 C++ 的支持依然落后于 GCC，Clang 还需要加强对 C++ 提供全方位支持。</li>
+<li>支持更多平台：GCC 流行的时间比较长，已经被广泛使用，对各种平台的支持也很完备。Clang 目前支持的平台有 Linux/Windows/Mac OS。</li>
+</ul>
+<h6 id="当然，GCC-也有其优势："><a href="#当然，GCC-也有其优势：" class="headerlink" title="当然，GCC 也有其优势："></a>当然，GCC 也有其优势：</h6><p>GCC 原名为GNU C语言编译器</p>
+<ul>
+<li>支持 JAVA/ADA/FORTRAN</li>
+<li>GCC 支持更多平台</li>
+<li>GCC 更流行，广泛使用，支持完备</li>
+<li>GCC 基于 C，不需要 C++ 编译器即可编译</li>
+</ul>
+<h3 id="关于Clang"><a href="#关于Clang" class="headerlink" title="关于Clang"></a>关于Clang</h3><h6 id="clang分三个实体概念："><a href="#clang分三个实体概念：" class="headerlink" title="clang分三个实体概念："></a>clang分三个实体概念：</h6><ul>
+<li>clang驱动：利用现有OS、编译环境以及参数选项来驱动整个编译过程的工具。</li>
+<li>clang编译器：利用clang前端组件及库打造的编译器，其入口为cc1_main; 参数为clang -cc1 或者 -Xclang；</li>
+<li>clang前端组件及库：包括Support、Basic、Diagnostics、Preprocessor、Lexer、Sema、CodeGen等；</li>
+</ul>
+<h5 id="Clang架构图"><a href="#Clang架构图" class="headerlink" title="Clang架构图"></a>Clang架构图</h5><p><img src="/images/clang0001.png" alt=""></p>
+<h5 id="Clang流程图"><a href="#Clang流程图" class="headerlink" title="Clang流程图"></a>Clang流程图</h5><p><img src="/images/clang0002.png" alt=""></p>
+<h5 id="关于编译器："><a href="#关于编译器：" class="headerlink" title="关于编译器："></a>关于编译器：</h5><p>编译器前端负责产生机器无关的中间代码</p>
+<p>编译器后端负责对中间代码进行优化并转化为目标机器代码，</p>
+<h3 id="编译过程："><a href="#编译过程：" class="headerlink" title="编译过程："></a>编译过程：</h3><p>预处理（Pre-process）：把宏替换，删除注释，展开头文件，产生 .i 文件。</p>
+<p>编译（Compliling）：把之前的 .i 文件转换成汇编语言，产生 .s文件。</p>
+<p>汇编（Asembly）：把汇编语言文件转换为机器码文件，产生 .o 文件。</p>
+<p>链接（Link）：对.o文件中的对于其他的库的引用的地方进行引用，生成最后的可执行文件（同时也包括多个 .o 文件进行 link）。</p>
+<h6 id="曾经看到有人对ios编译流程做了更加详细的理解"><a href="#曾经看到有人对ios编译流程做了更加详细的理解" class="headerlink" title="曾经看到有人对ios编译流程做了更加详细的理解"></a>曾经看到有人对ios编译流程做了更加详细的理解</h6><ul>
+<li>编译信息写入辅助文件，创建文件架构 .app 文件</li>
+<li>处理文件打包信息</li>
+<li>执行 CocoaPod 编译前脚本，checkPods Manifest.lock</li>
+<li>编译.m文件，使用 CompileC 和 clang 命令</li>
+<li>链接需要的 Framework</li>
+<li>编译 xib</li>
+<li>拷贝 xib ，资源文件</li>
+<li>编译 ImageAssets</li>
+<li>处理 info.plist</li>
+<li>执行 CocoaPod 脚本</li>
+<li>拷贝标准库</li>
+<li>创建 .app 文件和签名</li>
+</ul>
+<h6 id="期间包括了各种特性与底层"><a href="#期间包括了各种特性与底层" class="headerlink" title="期间包括了各种特性与底层"></a>期间包括了各种特性与底层</h6><ul>
+<li>预处理(宏的替换，头文件的导入，#if的处理)</li>
+<li>词法分析(把代码切成一个个 Token，大小括号，等于号,字符串)</li>
+<li>语法分析(法是否正确,将所有节点组成抽象语法树 AST)</li>
+<li>IR中间代码的生成</li>
+<li>CodeGen 会负责将语法树自顶向下遍历逐步翻译成 LLVM IR(IR 是编译过程的前端的输出后端的输入,Pass 是 LLVM 优化工作的一个节点，一个节点做些事，一起加起来就构成了 LLVM 完整的优化和转化。)</li>
+<li>开启了 bitcode 苹果会做进一步的优化，有新的后端架构还是可以用这份优化过的 bitcode 去生成。</li>
+<li>生成汇编</li>
+<li>生成目标文件</li>
+<li>生成可执行文件</li>
+</ul>
+<h3 id="点击Run做了什么（上面的详细版）："><a href="#点击Run做了什么（上面的详细版）：" class="headerlink" title="点击Run做了什么（上面的详细版）："></a>点击Run做了什么（上面的详细版）：</h3><p>预处理 -&gt; 词法分析 （token ） -&gt;语法分析 -&gt;语义分析 -&gt;中间代码生成 -&gt; 生成字节码-&gt; 优化 -&gt; 生成汇编代码 -&gt; Link -&gt; 目标文件 -&gt;生层可执行文件。</p>
+<h6 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h6><p>预处理：处理源文件中#开头的预编译命令，宏的替换</p>
+<h6 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h6><p>词法分析 （token ）：把代码切成一个个Token（词法/代码符号），大小括号，等于号,字符串</p>
+<p>语法分析：符号化的字符串，转化抽象为可以被计算机存储的树形结构，即抽象语法树（AST），检测正确性 </p>
+<p>语义分析：语义分析器就会发现类型不匹配，编译器提出相应的错误警告。主要是类型检查、以及符号表管理</p>
+<p>中间代码生成：编译器前端负责产生机器无关的中间代码，编译器后端负责对中间代码进行优化并转化为目标机器代码</p>
+<p>生成字节码/目标代码：编译器后端主要包括代码生成器、代码优化器。代码生成器将中间代码转换为目标代码，代码优化器主要是进行一些优化，比如删除多余指令，选择合适寻址方式等</p>
+<h6 id="汇编"><a href="#汇编" class="headerlink" title="汇编"></a>汇编</h6><p>目标代码需要经过汇编器处理，才能变成机器上可以执行的指令。生成对应的.o文件</p>
+<h6 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h6><p>链接器（这里指的是静态链接器）将多个目标文件合并为一个可执行文件，在 OS X 和 iOS中的可执行文件是 Mach-O，对于Mach-O的文件格式可以参考这里，刚才所描述的过程其实可以用 sunnyxx的一页 ppt来进行总结</p>
+<ul>
+<li>动态：静态链接：在编译链接期间发挥作用，把目标文件和静态库一起链接形成可执行文件</li>
+<li>静态：动态链接：链接过程推迟到运行时再进行。</li>
+</ul>
+<h6 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h6><p>如果多个程序都用到了一个库，那么每个程序都要将其链接到可执行文件中，非常冗余，动态链接的话，多个程序可以共享同一段代码，不需要在磁盘上存多份拷贝，但是动态链接发生在启动或运行时，增加了启动时间，造成一些性能的影响。</p>
+<p>静态库不方便升级，必须重新编译，动态库的升级更加方便</p>
+<h6 id="签名（-app）"><a href="#签名（-app）" class="headerlink" title="签名（.app）"></a>签名（.app）</h6><p>.app目录中，有又一个叫_CodeSignature的子目录，这是一个 plist文件，里面包含了程序的代码签名，你的程序一旦签名，就没有办法更改其中的任何东西，包括资源文件，可执行文件等，iOS系统会检查这个签名。</p>
+<p>签名过程本身是由命令行工具 codesign 来完成的。如果你在 Xcode中build一个应用，这个应用构建完成之后会自动调用codesign 命令进行签名，这也是Link之后的一个关键步骤。</p>
+<p>​    </p>
+<h6 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h6><p>启动过程中，dyld（动态链接器） 起了很重要的作用，进行动态链接，进行符号和地址的一个绑定。</p>
+<ul>
+<li>加载所依赖的dylibs</li>
+<li><p>Fix-ups：Rebase修正地址偏移，因为 OS X和 iOS 搞了一个叫 ASLR的东西来做地址偏移（随机化）来避免收到攻击</p>
+</li>
+<li><p>Fix-ups：Binding确定 Non-Lazy Pointer地址，进行符号地址绑定。</p>
+</li>
+<li><p>ObjC runtime初始化：加载所有类</p>
+</li>
+<li><p>Initializers：执行load 方法和<strong>attribute</strong>((constructor))修饰的函数</p>
+</li>
+</ul>
+<h3 id="扯在最后"><a href="#扯在最后" class="headerlink" title="扯在最后"></a>扯在最后</h3><p>宏观的LLVM，指的是整个的LLVM的框架，它肯定包含了Clang，因为Clang是LLVM的框架的一部分，是它的一个C/C++的前端。虽然这个前端占的比重比较大，但是它依然只是个前端，LLVM框架可以有很多个前端和很多个后端，只要你想继续扩展。</p>
+<p>微观的LLVM指的是以实际开发过程中，包括实际使用过程中，划分出来的LLVM。比如编译LLVM和Clang的时候，LLVM的源码包是不包含Clang的源码包的，需要单独下载Clang的源码包。</p>
+<p>所以这里想讨论的就是微观的LLVM和Clang的关系。从编译器用户的角度，Clang使用了LLVM中的一些功能，目前所知道的主要就是对中间格式代码的优化，或许还有一部分生成代码的功能。从Clang和微观LLVM的源码位置可以看出，Clang是基于微观的LLVM的一个工具。而从功能的角度来说，微观的LLVM可以认为是一个编译器的后端，而Clang是一个编译器的前端，它们的关系就更加的明了了，一个编译器前端想要程序最终变成可执行文件，是缺少不了对编译器后端的介绍的。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/20/我的读书清单/" rel="next" title="我的读书清单">
+                <i class="fa fa-chevron-left"></i> 我的读书清单
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/10/整理一下linux命令/" rel="prev" title="整理一下linux命令">
+                整理一下linux命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/20/初识-LLVM:Clang/"
+           data-title="初识-LLVM/Clang" data-url="http://dupengfei.com/2017/01/20/初识-LLVM:Clang/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="杜鹏飞" />
+          <p class="site-author-name" itemprop="name">杜鹏飞</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS Developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/dupengfei" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://plus.google.com/u/0/117309292640302365524" target="_blank" title="G+">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  G+
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结一句"><span class="nav-number">2.</span> <span class="nav-text">总结一句</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#LLVM其他用途"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">LLVM其他用途</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区别于优势："><span class="nav-number">3.</span> <span class="nav-text">区别于优势：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#总结：Clang-具有如下优点："><span class="nav-number">3.0.0.1.</span> <span class="nav-text">总结：Clang 具有如下优点：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Clang缺陷："><span class="nav-number">3.0.0.2.</span> <span class="nav-text">Clang缺陷：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#当然，GCC-也有其优势："><span class="nav-number">3.0.0.3.</span> <span class="nav-text">当然，GCC 也有其优势：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于Clang"><span class="nav-number">4.</span> <span class="nav-text">关于Clang</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#clang分三个实体概念："><span class="nav-number">4.0.0.1.</span> <span class="nav-text">clang分三个实体概念：</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Clang架构图"><span class="nav-number">4.0.1.</span> <span class="nav-text">Clang架构图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Clang流程图"><span class="nav-number">4.0.2.</span> <span class="nav-text">Clang流程图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#关于编译器："><span class="nav-number">4.0.3.</span> <span class="nav-text">关于编译器：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译过程："><span class="nav-number">5.</span> <span class="nav-text">编译过程：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#曾经看到有人对ios编译流程做了更加详细的理解"><span class="nav-number">5.0.0.1.</span> <span class="nav-text">曾经看到有人对ios编译流程做了更加详细的理解</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#期间包括了各种特性与底层"><span class="nav-number">5.0.0.2.</span> <span class="nav-text">期间包括了各种特性与底层</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点击Run做了什么（上面的详细版）："><span class="nav-number">6.</span> <span class="nav-text">点击Run做了什么（上面的详细版）：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#预处理"><span class="nav-number">6.0.0.1.</span> <span class="nav-text">预处理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#编译"><span class="nav-number">6.0.0.2.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#汇编"><span class="nav-number">6.0.0.3.</span> <span class="nav-text">汇编</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#链接"><span class="nav-number">6.0.0.4.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#区别"><span class="nav-number">6.0.0.5.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#签名（-app）"><span class="nav-number">6.0.0.6.</span> <span class="nav-text">签名（.app）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#启动"><span class="nav-number">6.0.0.7.</span> <span class="nav-text">启动</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扯在最后"><span class="nav-number">7.</span> <span class="nav-text">扯在最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杜鹏飞</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dupengfei"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

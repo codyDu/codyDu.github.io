@@ -1,0 +1,813 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言 在APP优化中，离屏渲染一定是个经常被提起的话题。避免离屏渲染是优化帧数的重要手段. 离屏渲染 通常来说，计算机系统中 CPU、GPU、显示器是以上面这种方式协同工作的。CPU 计算好显示内容提交到 GPU，GPU 渲染完成后将渲染结果放入帧缓冲区，随后视频控制器会按照 VSync 信号，逐行读取帧缓冲区的数据，经过可能的数模转换传递给显示器显示。 在 VSync 信号到来后，系统图形服务会">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="离屏渲染">
+<meta property="og:url" content="http://dupengfei.com/2017/03/21/离屏渲染/index.html">
+<meta property="og:site_name" content="杜鹏飞的博客">
+<meta property="og:description" content="前言 在APP优化中，离屏渲染一定是个经常被提起的话题。避免离屏渲染是优化帧数的重要手段. 离屏渲染 通常来说，计算机系统中 CPU、GPU、显示器是以上面这种方式协同工作的。CPU 计算好显示内容提交到 GPU，GPU 渲染完成后将渲染结果放入帧缓冲区，随后视频控制器会按照 VSync 信号，逐行读取帧缓冲区的数据，经过可能的数模转换传递给显示器显示。 在 VSync 信号到来后，系统图形服务会">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dupengfei.com/images/lipingxuanran.png">
+<meta property="og:updated_time" content="2020-12-31T10:11:57.916Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="离屏渲染">
+<meta name="twitter:description" content="前言 在APP优化中，离屏渲染一定是个经常被提起的话题。避免离屏渲染是优化帧数的重要手段. 离屏渲染 通常来说，计算机系统中 CPU、GPU、显示器是以上面这种方式协同工作的。CPU 计算好显示内容提交到 GPU，GPU 渲染完成后将渲染结果放入帧缓冲区，随后视频控制器会按照 VSync 信号，逐行读取帧缓冲区的数据，经过可能的数模转换传递给显示器显示。 在 VSync 信号到来后，系统图形服务会">
+<meta name="twitter:image" content="http://dupengfei.com/images/lipingxuanran.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://dupengfei.com/2017/03/21/离屏渲染/"/>
+
+
+
+
+
+  <title> 离屏渲染 | 杜鹏飞的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b627bfa0d9d39ca04a7102b636415274";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">杜鹏飞的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录一些，分享一些，欢迎交流</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://dupengfei.com/2017/03/21/离屏渲染/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜鹏飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜鹏飞的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                离屏渲染
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-21T02:01:10+08:00">
+                2017-03-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/21/离屏渲染/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/21/离屏渲染/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p> 在APP优化中，离屏渲染一定是个经常被提起的话题。避免离屏渲染是优化帧数的重要手段.</p>
+<h4 id="离屏渲染"><a href="#离屏渲染" class="headerlink" title="离屏渲染"></a>离屏渲染</h4><p><img src="/images/lipingxuanran.png" alt=""></p>
+<p>通常来说，计算机系统中 CPU、GPU、显示器是以上面这种方式协同工作的。CPU 计算好显示内容提交到 GPU，GPU 渲染完成后将渲染结果放入帧缓冲区，随后视频控制器会按照 VSync 信号，逐行读取帧缓冲区的数据，经过可能的数模转换传递给显示器显示。</p>
+<p>在 VSync 信号到来后，系统图形服务会通过 CADisplayLink 等机制通知 App，App 主线程开始在 CPU 中计算显示内容，比如视图的创建、布局计算、图片解码、文本绘制等。随后 CPU 会将计算好的内容提交到 GPU 去，由 GPU 进行变换、合成、渲染。随后 GPU 会把渲染结果提交到帧缓冲区去，等待下一次 VSync 信号到来时显示到屏幕上。由于垂直同步的机制，如果在一个 VSync 时间内，CPU 或者 GPU 没有完成内容提交，则那一帧就会被丢弃，等待下一次机会再显示，而这时显示屏会保留之前的内容不变。这就是界面卡顿的原因。从上图中可以看到，CPU 和 GPU 不论哪个阻碍了显示流程，都会造成掉帧现象。所以开发时，也需要分别对 CPU 和 GPU 压力进行评估和优化。</p>
+<h4 id="一、概念理解"><a href="#一、概念理解" class="headerlink" title="一、概念理解"></a>一、概念理解</h4><p>离屏渲染可以被 Core Animation 自动触发，或者被应用程序强制触发。屏幕外的渲染会合并/渲染图层树的一部分到一个新的缓冲区，然后该缓冲区被渲染到屏幕上。</p>
+<p>离屏渲染合成计算是非常昂贵的, 但有时你也许希望强制这种操作。一种好的方法就是缓存合成的纹理/图层。如果你的渲染树非常复杂(所有的纹理，以及如何组合在一起)，你可以强制离屏渲染缓存那些图层，然后可以用缓存作为合成的结果放到屏幕上。</p>
+<p>如果你的程序混合了很多图层，并且想要他们一起做动画，GPU 通常会为每一帧(1/60s)重复合成所有的图层。当使用离屏渲染时，GPU 第一次会混合所有图层到一个基于新的纹理的位图缓存上，然后使用这个纹理来绘制到屏幕上。现在，当这些图层一起移动的时候，GPU 便可以复用这个位图缓存，并且只需要做很少的工作。需要注意的是，只有当那些图层不改变时，这才可以用。如果那些图层改变了，GPU 需要重新创建位图缓存。你可以通过设置 shouldRasterize 为 YES 来触发这个行为。</p>
+<p>然而，这是一个权衡。第一，这可能会使事情变得更慢。创建额外的屏幕外缓冲区是 GPU 需要多做的一步操作，特殊情况下这个位图可能再也不需要被复用，这便是一个无用功了。然而，可以被复用的位图，GPU 也有可能将它卸载了。所以你需要计算 GPU 的利用率和帧的速率来判断这个位图是否有用。</p>
+<p>离屏渲染也可能产生副作用。如果你正在直接或者间接的将mask应用到一个图层上，Core Animation 为了应用这个 mask，会强制进行屏幕外渲染。这会对 GPU 产生重负。通常情况下 mask 只能被直接渲染到帧的缓冲区中(在屏幕内)。</p>
+<p>Instrument 的 Core Animation 工具有一个叫做 Color Offscreen-Rendered Yellow 的选项，它会将已经被渲染到屏幕外缓冲区的区域标注为黄色(这个选项在模拟器中也可以用)。同时记得检查 Color Hits Green and Misses Red 选项。绿色代表无论何时一个屏幕外缓冲区被复用，而红色代表当缓冲区被重新创建。</p>
+<p>一般情况下，你需要避免离屏渲染，因为这是很大的消耗。直接将图层合成到帧的缓冲区中(在屏幕上)比先创建屏幕外缓冲区，然后渲染到纹理中，最后将结果渲染到帧的缓冲区中要廉价很多。因为这其中涉及两次昂贵的环境转换(转换环境到屏幕外缓冲区，然后转换环境到帧缓冲区)。</p>
+<p>所以当你打开 Color Offscreen-Rendered Yellow 后看到黄色，这便是一个警告，但这不一定是不好的。如果 Core Animation 能够复用屏幕外渲染的结果，这便能够提升性能。</p>
+<p>同时还要注意，rasterized layer 的空间是有限的。苹果暗示大概有屏幕大小两倍的空间来存储 rasterized layer/屏幕外缓冲区。</p>
+<p>如果你使用 layer 的方式会通过屏幕外渲染，你最好摆脱这种方式。为 layer 使用蒙板或者设置圆角半径会造成屏幕外渲染，产生阴影也会如此。</p>
+<p>OpenGL中，GPU屏幕渲染有以下两种方式：</p>
+<ul>
+<li><p>On-Screen Rendering<br>意为当前屏幕渲染，指的是GPU的渲染操作是在当前用于显示的屏幕缓冲区中进行。</p>
+</li>
+<li><p>Off-Screen Rendering<br>意为离屏渲染，指的是GPU在当前屏幕缓冲区以外新开辟一个缓冲区进行渲染操作。</p>
+</li>
+</ul>
+<h4 id="二、离屏渲染的代价"><a href="#二、离屏渲染的代价" class="headerlink" title="二、离屏渲染的代价"></a>二、离屏渲染的代价</h4><p>相比于当前屏幕渲染，离屏渲染的代价是很高的，主要体现在两个方面：</p>
+<ul>
+<li>创建新缓冲区</li>
+<li>要想进行离屏渲染，首先要创建一个新的缓冲区。</li>
+<li>上下文切换：离屏渲染的整个过程，需要多次切换上下文环境：先是从当前屏幕（On-Screen）切换到离屏（Off-Screen）；等到离屏渲染结束以后，将离屏缓冲区的渲染结果显示到屏幕上有需要将上下文环境从离屏切换到当前屏幕。而上下文环境的切换是要付出很大代价的。</li>
+</ul>
+<h4 id="三、离屏渲染触发方式"><a href="#三、离屏渲染触发方式" class="headerlink" title="三、离屏渲染触发方式"></a>三、离屏渲染触发方式</h4><p>设置了以下属性时，都会触发离屏绘制：</p>
+<ul>
+<li>shouldRasterize（光栅化）</li>
+<li>masks（遮罩）</li>
+<li>shadows（阴影）</li>
+<li>edge antialiasing（抗锯齿）</li>
+<li>group opacity（不透明）<br>需要注意的是，如果shouldRasterize被设置成YES，在触发离屏绘制的同时，会将光栅化后的内容缓存起来，如果对应的layer及其sublayers没有发生改变，在下一帧的时候可以直接复用。这将在很大程度上提升渲染性能。</li>
+</ul>
+<p>而其它属性如果是开启的，就不会有缓存，离屏绘制会在每一帧都发生。</p>
+<h4 id="四、另一种特殊的“离屏渲染”"><a href="#四、另一种特殊的“离屏渲染”" class="headerlink" title="四、另一种特殊的“离屏渲染”"></a>四、另一种特殊的“离屏渲染”</h4><p>按照之前的说法，如果将不在GPU的当前屏幕缓冲区中进行的渲染都称为离屏渲染，那么就还有另一种特殊的“离屏渲染”方式：CPU渲染。</p>
+<p>如果我们重写了drawRect方法，并且使用任何Core Graphics的技术进行了绘制操作，就涉及到了CPU渲染。整个渲染过程由CPU在App内同步地完成，渲染得到的bitmap最后再交由GPU用于显示。</p>
+<h4 id="渲染相关"><a href="#渲染相关" class="headerlink" title="渲染相关"></a>渲染相关</h4><h4 id="drawRect-工作的流程"><a href="#drawRect-工作的流程" class="headerlink" title="drawRect 工作的流程"></a>drawRect 工作的流程</h4><p>如果你的视图类实现了 -drawRect:，他们将像这样工作:</p>
+<p>当你调用 -setNeedsDisplay，UIKit 将会在这个视图的图层上调用 -setNeedsDisplay。这为图层设置了一个标识，标记为 dirty(直译是脏的意思，想不出用什么词比较贴切,污染？)，但还显示原来的内容。它实际上没做任何工作，所以多次调用 -setNeedsDisplay并不会造成性能损失。</p>
+<p>下面，当渲染系统准备好，它会调用视图图层的-display方法.此时，图层会装配它的后备存储。然后建立一个 Core Graphics 上下文(CGContextRef)，将后备存储对应内存中的数据恢复出来，绘图会进入对应的内存区域，并使用 CGContextRef 绘制。</p>
+<p>当你使用 UIKit 的绘制方法，例如: UIRectFill() 或者 -[UIBezierPath fill] 代替你的 -drawRect: 方法，他们将会使用这个上下文。使用方法是，UIKit 将后备存储的 CGContextRef 推进他的 graphics context stack，也就是说，它会将那个上下文设置为当前的。因此 UIGraphicsGetCurrent() 将会返回那个对应的上下文。既然 UIKit 使用 UIGraphicsGetCurrent() 绘制方法，绘图将会进入到图层的后备存储。如果你想直接使用 Core Graphics 方法，你可以自己调用 UIGraphicsGetCurrent() 得到相同的上下文，并且将这个上下文传给 Core Graphics 方法。</p>
+<p>从现在开始，图层的后备存储将会被不断的渲染到屏幕上。直到下次再次调用视图的 -setNeedsDisplay ，将会依次将图层的后备存储更新到视图上。</p>
+<h4 id="实现-drawRect-还是不实现-drawRect"><a href="#实现-drawRect-还是不实现-drawRect" class="headerlink" title="实现-drawRect: 还是不实现 -drawRect:"></a>实现-drawRect: 还是不实现 -drawRect:</h4><p>最快的绘制就是你不要做任何绘制。</p>
+<p>大多数时间，你可以不要合成你在其他视图(图层)上定制的视图(图层)，因为 UIKit 的视图类是非常优化的 (就是让我们不要闲着没事做,自己去合并视图或图层) 。</p>
+<h3 id="致谢"><a href="#致谢" class="headerlink" title="致谢"></a>致谢</h3><p>参考博客：<br><a href="https://link.jianshu.com?t=http://www.cocoachina.com/ios/20151203/14549.html" target="_blank" rel="noopener">事件处理机制与图像</a><br><a href="https://link.jianshu.com?t=http://foggry.com/blog/2015/05/06/chi-ping-xuan-ran-xue-xi-bi-ji/" target="_blank" rel="noopener">离屏渲染</a><br><a href="https://link.jianshu.com?t=https://objccn.io/issue-3-1/" target="_blank" rel="noopener">绘制像素到屏幕上</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/10/整理一下linux命令/" rel="next" title="整理一下linux命令">
+                <i class="fa fa-chevron-left"></i> 整理一下linux命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/21/离屏渲染/"
+           data-title="离屏渲染" data-url="http://dupengfei.com/2017/03/21/离屏渲染/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="杜鹏飞" />
+          <p class="site-author-name" itemprop="name">杜鹏飞</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS Developer</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/dupengfei" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://plus.google.com/u/0/117309292640302365524" target="_blank" title="G+">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  G+
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#离屏渲染"><span class="nav-number">2.</span> <span class="nav-text">离屏渲染</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一、概念理解"><span class="nav-number">3.</span> <span class="nav-text">一、概念理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、离屏渲染的代价"><span class="nav-number">4.</span> <span class="nav-text">二、离屏渲染的代价</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、离屏渲染触发方式"><span class="nav-number">5.</span> <span class="nav-text">三、离屏渲染触发方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、另一种特殊的“离屏渲染”"><span class="nav-number">6.</span> <span class="nav-text">四、另一种特殊的“离屏渲染”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#渲染相关"><span class="nav-number">7.</span> <span class="nav-text">渲染相关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#drawRect-工作的流程"><span class="nav-number">8.</span> <span class="nav-text">drawRect 工作的流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现-drawRect-还是不实现-drawRect"><span class="nav-number">9.</span> <span class="nav-text">实现-drawRect: 还是不实现 -drawRect:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#致谢"><span class="nav-number"></span> <span class="nav-text">致谢</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杜鹏飞</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dupengfei"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

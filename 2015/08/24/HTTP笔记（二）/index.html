@@ -87,29 +87,22 @@
 
 
 
-<meta name="description" content="第 4 章 返回结果的 HTTP 状态码4.1 状态码告知从服务器端返回的请求结果状态码的职责是当客户端向服务器端发送请求时，描述返回的请求结果。
-
-数字中的第一位定义了响应类别，后两位无分类。响应类别有以下 5 种：
- 类别 | 原因短语 || — | — | — || 1XX | Informational（信息性状态码） | 接收的请求正在处理 || 2XX | Success（成功状态码）">
+<meta name="description" content="第 4 章 返回结果的 HTTP 状态码4.1 状态码告知从服务器端返回的请求结果状态码的职责是当客户端向服务器端发送请求时，描述返回的请求结果。  数字中的第一位定义了响应类别，后两位无分类。响应类别有以下 5 种：  类别 | 原因短语 || — | — | — || 1XX | Informational（信息性状态码） | 接收的请求正在处理 || 2XX | Success（成功状态码）">
+<meta name="keywords" content="网络">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HTTP笔记（二）">
 <meta property="og:url" content="http://dupengfei.com/2015/08/24/HTTP笔记（二）/index.html">
 <meta property="og:site_name" content="杜鹏飞的博客">
-<meta property="og:description" content="第 4 章 返回结果的 HTTP 状态码4.1 状态码告知从服务器端返回的请求结果状态码的职责是当客户端向服务器端发送请求时，描述返回的请求结果。
-
-数字中的第一位定义了响应类别，后两位无分类。响应类别有以下 5 种：
- 类别 | 原因短语 || — | — | — || 1XX | Informational（信息性状态码） | 接收的请求正在处理 || 2XX | Success（成功状态码）">
+<meta property="og:description" content="第 4 章 返回结果的 HTTP 状态码4.1 状态码告知从服务器端返回的请求结果状态码的职责是当客户端向服务器端发送请求时，描述返回的请求结果。  数字中的第一位定义了响应类别，后两位无分类。响应类别有以下 5 种：  类别 | 原因短语 || — | — | — || 1XX | Informational（信息性状态码） | 接收的请求正在处理 || 2XX | Success（成功状态码）">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-4.1.1.jpg">
 <meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-5.2.1.jpg">
 <meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-5.2.2.jpg">
 <meta property="og:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-5.2.3.jpg">
-<meta property="og:updated_time" content="2017-03-16T17:04:30.000Z">
+<meta property="og:updated_time" content="2020-12-31T10:11:57.912Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTTP笔记（二）">
-<meta name="twitter:description" content="第 4 章 返回结果的 HTTP 状态码4.1 状态码告知从服务器端返回的请求结果状态码的职责是当客户端向服务器端发送请求时，描述返回的请求结果。
-
-数字中的第一位定义了响应类别，后两位无分类。响应类别有以下 5 种：
- 类别 | 原因短语 || — | — | — || 1XX | Informational（信息性状态码） | 接收的请求正在处理 || 2XX | Success（成功状态码）">
+<meta name="twitter:description" content="第 4 章 返回结果的 HTTP 状态码4.1 状态码告知从服务器端返回的请求结果状态码的职责是当客户端向服务器端发送请求时，描述返回的请求结果。  数字中的第一位定义了响应类别，后两位无分类。响应类别有以下 5 种：  类别 | 原因短语 || — | — | — || 1XX | Informational（信息性状态码） | 接收的请求正在处理 || 2XX | Success（成功状态码）">
 <meta name="twitter:image" content="http://7xikfc.com1.z0.glb.clouddn.com/http-4.1.1.jpg">
 
 
@@ -401,7 +394,7 @@
 <p><img src="http://7xikfc.com1.z0.glb.clouddn.com/http-4.1.1.jpg" alt=""></p>
 <p>数字中的第一位定义了响应类别，后两位无分类。响应类别有以下 5 种：</p>
 <p> 类别 | 原因短语 |<br>| — | — | — |<br>| 1XX | Informational（信息性状态码） | 接收的请求正在处理 |<br>| 2XX | Success（成功状态码） | 请求正常处理完毕 |<br>| 3XX | Redirection（重定向状态码） | 需求进行附加操作以完成请求 |<br>| 4XX | Client Error（客户端错误状态码） | 服务器无法处理请求 |<br>| 5XX | Server Error（服务器错误状态码） | 服务器处理请求出错 |</p>
-<p>只要遵守状态码类别的定义，即使改变 <a href="https://datatracker.ietf.org/doc/rfc2616/" target="_blank" rel="external">RFC2616</a> 中定义的状态码，或服务器端自行创建状态码都没问题。</p>
+<p>只要遵守状态码类别的定义，即使改变 <a href="https://datatracker.ietf.org/doc/rfc2616/" target="_blank" rel="noopener">RFC2616</a> 中定义的状态码，或服务器端自行创建状态码都没问题。</p>
 <h4 id="2XX-成功"><a href="#2XX-成功" class="headerlink" title="2XX 成功"></a>2XX 成功</h4><p>200 OK：表示从客户端发来的请求在服务器端被正常处理了</p>
 <p>204 No Content：请求处理成功，但是没有资源返回</p>
 <p>206 Partial Content：请求处理成功，返回部分内容，响应报文中包含 Content-Range 指定范围的实体内容</p>
@@ -881,7 +874,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -890,7 +883,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -899,7 +892,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -977,7 +970,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

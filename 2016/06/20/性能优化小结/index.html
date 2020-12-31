@@ -88,12 +88,14 @@
 
 
 <meta name="description" content="用ARC管理内存 ARC(Automatic Reference Counting, 自动引用计数)和iOS5一起发布，它避免了最常见的也就是经常是由于我们忘记释放内存所造成的内存泄露。它自动为你管理retain和release的过程，所以你就不必去手动干预了。 除了帮你避免内存泄露，ARC还可以帮你提高性能，它能保证释放掉不再需要的对象的内存   在正确的地方使用reuseIdentifier">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="性能优化小结">
 <meta property="og:url" content="http://dupengfei.com/2016/06/20/性能优化小结/index.html">
 <meta property="og:site_name" content="杜鹏飞的博客">
 <meta property="og:description" content="用ARC管理内存 ARC(Automatic Reference Counting, 自动引用计数)和iOS5一起发布，它避免了最常见的也就是经常是由于我们忘记释放内存所造成的内存泄露。它自动为你管理retain和release的过程，所以你就不必去手动干预了。 除了帮你避免内存泄露，ARC还可以帮你提高性能，它能保证释放掉不再需要的对象的内存   在正确的地方使用reuseIdentifier">
-<meta property="og:updated_time" content="2017-03-16T11:50:57.000Z">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-31T10:11:57.916Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="性能优化小结">
 <meta name="twitter:description" content="用ARC管理内存 ARC(Automatic Reference Counting, 自动引用计数)和iOS5一起发布，它避免了最常见的也就是经常是由于我们忘记释放内存所造成的内存泄露。它自动为你管理retain和release的过程，所以你就不必去手动干预了。 除了帮你避免内存泄露，ARC还可以帮你提高性能，它能保证释放掉不再需要的对象的内存   在正确的地方使用reuseIdentifier">
@@ -448,7 +450,7 @@
 <p>NSCoding？不幸的是，它也需要读写文件，所以也有以上问题。</p>
 <p>在这种应用场景下，使用SQLite 或者 Core Data比较好。使用这些技术你用特定的查询语句就能只加载你需要的对象。</p>
 <p>在性能层面来讲，SQLite和Core Data是很相似的。他们的不同在于具体使用方法。Core Data代表一个对象的graph model，但SQLite就是一个DBMS。Apple在一般情况下建议使用Core Data，但是如果你有理由不使用它，那么就去使用更加底层的SQLite吧。</p>
-<p>如果你使用SQLite，你可以用FMDB(<a href="https://github.com/ccgus/fmdb" target="_blank" rel="external">https://github.com/ccgus/fmdb</a>)这个库来简化SQLite的操作，这样你就不用花很多经历了解SQLite的C API了。</p>
+<p>如果你使用SQLite，你可以用FMDB(<a href="https://github.com/ccgus/fmdb" target="_blank" rel="noopener">https://github.com/ccgus/fmdb</a>)这个库来简化SQLite的操作，这样你就不用花很多经历了解SQLite的C API了。</p>
 </li>
 <li><p>加速启动时间 尽可能做更多的异步任务，比如加载远端或者数据库数据，解析数据。</p>
 </li>
@@ -652,7 +654,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -661,7 +663,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -670,7 +672,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -732,7 +734,7 @@
         <div class="copyright" >
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
